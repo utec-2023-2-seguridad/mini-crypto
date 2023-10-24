@@ -15,7 +15,7 @@ jobs:
     - uses: ammaraskar/gcc-problem-matcher@master
 
     - name: deps
-      run: sudo apt install asciidoctor bash-completion j2cli
+      run: sudo apt install bash-completion
 
     - name: configure
       run: cmake -B build

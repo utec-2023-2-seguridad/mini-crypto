@@ -44,7 +44,6 @@ set_target_properties(${PROJECT_NAME}
 find_package(bash-completion)
 
 add_subdirectory(src) # Sources list
-add_subdirectory(doc) # Documentation
 add_subdirectory(pkg) # Packaging
 
 ## Shared libraries
