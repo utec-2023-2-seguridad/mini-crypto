@@ -2,7 +2,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/otreblan/hello?logo=github)
 ![GitHub](https://img.shields.io/github/license/otreblan/hello?logo=gnu)
 
-# {{ DESCRIPTION }}
+# Toy blockchain
 
 ## Dependencies
 
@@ -12,8 +12,8 @@
 
 ## Build
 ``` bash
-git clone {{ HOMEPAGE_URL }}
-cd {{ NAME }}
+git clone https://github.com/utec-2023-2-seguridad/mini-crypto
+cd mini-crypto
 
 mkdir -p build
 cd build

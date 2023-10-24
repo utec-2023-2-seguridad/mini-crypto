@@ -1,25 +1,25 @@
-# {{ DESCRIPTION }}
-# Copyright © {{ YEAR }} {{ USER_NAME }}
+# Toy blockchain
+# Copyright © 2023 Otreblan
 #
-# {{ NAME }} is free software: you can redistribute it and/or modify
+# mini-crypto is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# {{ NAME }} is distributed in the hope that it will be useful,
+# mini-crypto is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with {{ NAME }}.  If not, see <http://www.gnu.org/licenses/>.
+# along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 3.13.0)
 
-project({{ NAME }}
-	VERSION {{ VERSION }}
-	DESCRIPTION "{{ DESCRIPTION }}"
-	HOMEPAGE_URL "{{ HOMEPAGE_URL }}"
+project(mini-crypto
+	VERSION 0.0.0
+	DESCRIPTION "Toy blockchain"
+	HOMEPAGE_URL "https://github.com/utec-2023-2-seguridad/mini-crypto"
 )
 
 # Default build type

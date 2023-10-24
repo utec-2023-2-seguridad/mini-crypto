@@ -1,14 +1,14 @@
-# Maintainer: {{ USER_NAME }} <{{ USER_EMAIL }}>
+# Maintainer: Otreblan <alberto.oporto@utec.edu.pe>
 
 # shellcheck shell=bash disable=SC2034,SC2154,SC2164
 
-pkgname={{ NAME }}-git
-pkgver=v{{ VERSION }}
+pkgname=mini-crypto-git
+pkgver=v0.0.0
 pkgrel=1
 epoch=
-pkgdesc="{{ DESCRIPTION }}"
+pkgdesc="Toy blockchain"
 arch=('x86_64')
-url="{{ HOMEPAGE_URL }}"
+url="https://github.com/utec-2023-2-seguridad/mini-crypto"
 license=('GPL3')
 groups=()
 depends=('gcc-libs')
