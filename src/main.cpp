@@ -16,8 +16,13 @@
 
 #include <iostream>
 
+#include <sodium.h>
+
 int main()
 {
+	if(sodium_init() < 0)
+		return EXIT_FAILURE;
+
 	std::cout << "Hello\n";
 	return 0;
 }
