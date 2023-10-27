@@ -6,18 +6,14 @@
 
 ## Dependencies
 
-* `asciidoctor`
 * `bash-completion`
+* `build-essential`
 * `cmake`
+* `libsodium-dev`
+* `pkgconf`
 
 ## Build
 ``` bash
-git clone https://github.com/utec-2023-2-seguridad/mini-crypto
-cd mini-crypto
-
-mkdir -p build
-cd build
-
-cmake ..
-make
+cmake -B build
+cmake --build build
 ```
