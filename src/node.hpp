@@ -16,12 +16,15 @@
 
 #pragma once
 
+#include <boost/asio.hpp>
+
 namespace mini_crypto
 {
 
 class node
 {
 private:
+	boost::asio::io_context io;
 
 public:
 	node();
