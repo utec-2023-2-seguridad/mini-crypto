@@ -14,21 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "tcp_connection.hpp"
-#include "tcp_server.hpp"
+#pragma once
 
-#include <cstdlib>
-#include <iostream>
+#include <memory>
+
+#include <boost/asio.hpp>
 
 namespace mini_crypto
 {
 
-tcp_server::tcp_server(asio::io_context& io, int port):
-	io(io),
-	acceptor(io, tcp::endpoint(tcp::v4(), port))
+namespace asio = boost::asio;
+
+class tcp_connection: public std::enable_shared_from_this<tcp_connection>
 {
-	// TODO: Start listening and sending requests to the p2p network
-	std::cout << "Hello\n";
-}
+private:
+	using tcp = asio::ip::tcp;
+
+	asio::io_context& io;
+	tcp::socket       socket;
+
+	tcp_connection(asio::io_context& io);
+
+public:
+	tcp::socket& get_socket();
+
+	void handle_write();
+	void start();
+
+	template <typename... Args>
+	static std::shared_ptr<tcp_connection> make(Args&&... args)
+	{
+		return std::shared_ptr<tcp_connection>(new tcp_connection(std::forward<Args>(args)...));
+	}
+};
 
 }

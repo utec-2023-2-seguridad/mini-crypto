@@ -17,5 +17,6 @@
 target_sources(${PROJECT_NAME}
 	PRIVATE
 		node.cpp
+		tcp_connection.cpp
 		tcp_server.cpp
 )
