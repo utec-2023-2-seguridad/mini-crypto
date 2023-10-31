@@ -69,6 +69,13 @@ target_compile_options(${PROJECT_NAME}
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra>
 )
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	target_precompile_headers(${PROJECT_NAME}
+		PRIVATE
+			<boost/asio.hpp>
+	)
+endif()
+
 # Bash completion
 file(WRITE ${CMAKE_BINARY_DIR}/bash-completion/${PROJECT_NAME}
 	"complete -F _longopt ${PROJECT_NAME}"
