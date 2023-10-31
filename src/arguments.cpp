@@ -27,7 +27,8 @@ void arguments::usage(int exit_code) const
 {
 	std::cout
 		<< "Usage: " << argv[0] << " [OPTION]...\n"
-		<< "\t-h, --help Show this help\n"
+		<< "\t-h, --help      Show this help.\n"
+		<< "\t-p, --port=PORT Listening port.\n"
 	;
 
 	exit(exit_code);
@@ -40,13 +41,17 @@ arguments::arguments(int argc, char** argv):
 
 void arguments::parse()
 {
+	if(argc < 2)
+		exit(EXIT_FAILURE);
+
 	int c;
 
-	static const char shortopts[] = "h";
+	static const char shortopts[] = "hp:";
 	static const option options[] =
 	{
-		{"help",      no_argument,       nullptr, 'h'},
-		{nullptr,     0,                 nullptr, 0},
+		{"help",  no_argument,       nullptr, 'h'},
+		{"port",  required_argument, nullptr, 'p'},
+		{nullptr, 0,                 nullptr, 0},
 	};
 
 	while((c = getopt_long(argc, argv, shortopts, options, nullptr)) != -1)
@@ -57,11 +62,22 @@ void arguments::parse()
 				usage(EXIT_SUCCESS);
 				break;
 
+			case 'p':
+				port = atoi(optarg);
+				break;
+
 			case '?':
 			default:
 				usage(EXIT_FAILURE);
 		}
 	}
+}
+
+node_create_info arguments::get_node_create_info() const
+{
+	return {
+		.port = port
+	};
 }
 
 }

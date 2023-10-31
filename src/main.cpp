@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
 	arguments.parse();
 
-	mini_crypto::node node;
+	mini_crypto::node node(arguments.get_node_create_info());
 
 	return node.run();
 }

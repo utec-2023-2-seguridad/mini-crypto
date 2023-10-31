@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "node_create_info.hpp"
+
 namespace mini_crypto
 {
 
@@ -25,6 +27,8 @@ private:
 	int    argc;
 	char** argv;
 
+	int port;
+
 	[[noreturn]]
 	void usage(int exit_code) const;
 
@@ -32,6 +36,8 @@ public:
 	arguments(int argc, char** argv);
 
 	void parse();
+
+	node_create_info get_node_create_info() const;
 };
 
 }
