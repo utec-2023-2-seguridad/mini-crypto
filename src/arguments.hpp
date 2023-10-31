@@ -14,25 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "arguments.hpp"
-#include "node.hpp"
+#pragma once
 
-#include <sodium.h>
-
-#include <clocale>
-
-int main(int argc, char** argv)
+namespace mini_crypto
 {
-	setlocale(LC_ALL, "");
 
-	if(sodium_init() < 0)
-		return EXIT_FAILURE;
+class arguments
+{
+private:
+	int    argc;
+	char** argv;
 
-	mini_crypto::arguments arguments(argc, argv);
+	[[noreturn]]
+	void usage(int exit_code) const;
 
-	arguments.parse();
+public:
+	arguments(int argc, char** argv);
 
-	mini_crypto::node node;
+	void parse();
+};
 
-	return node.run();
 }
