@@ -16,8 +16,5 @@
 
 target_sources(${PROJECT_NAME}
 	PRIVATE
-		arguments.cpp
-		main.cpp
+		node.cpp
 )
-
-add_subdirectory(node)

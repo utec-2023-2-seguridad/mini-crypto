@@ -16,5 +16,37 @@
 
 #pragma once
 
-#include "node/node.hpp"
-#include "node/node_create_info.hpp"
+#include "node_create_info.hpp"
+
+#include <boost/asio.hpp>
+
+namespace mini_crypto
+{
+
+namespace asio = boost::asio;
+
+class node
+{
+private:
+	class tcp_server
+	{
+	private:
+		using tcp = asio::ip::tcp;
+
+		asio::io_context& io;
+		tcp::acceptor     acceptor;
+
+	public:
+		tcp_server(asio::io_context& io, int port);
+	};
+
+	asio::io_context io;
+	tcp_server       server;
+
+public:
+	node(const node_create_info& create_info);
+
+	int run();
+};
+
+}

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "node_create_info.hpp"
+#include "node/node_create_info.hpp"
 
 namespace mini_crypto
 {
