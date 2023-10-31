@@ -15,27 +15,21 @@
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "node.hpp"
+#include "tcp_server.hpp"
 
 #include <cstdlib>
-#include <iostream>
 
 namespace mini_crypto
 {
 
-node::tcp_server::tcp_server(asio::io_context& io, int port):
-	io(io),
-	acceptor(io, tcp::endpoint(tcp::v4(), port))
-{
-	// TODO: Start listening and sending requests to the p2p network
-	std::cout << "Hello\n";
-}
-
 node::node(const node_create_info& create_info):
-	server(io, create_info.port)
+	port(create_info.port)
 {}
 
 int node::run()
 {
+	tcp_server server(io, port);
+
 	io.run();
 	return EXIT_SUCCESS;
 }

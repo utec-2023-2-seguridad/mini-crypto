@@ -14,28 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "tcp_server.hpp"
 
-#include "node_create_info.hpp"
-
-#include <boost/asio.hpp>
+#include <cstdlib>
+#include <iostream>
 
 namespace mini_crypto
 {
 
-namespace asio = boost::asio;
-
-class node
+tcp_server::tcp_server(asio::io_context& io, int port):
+	io(io),
+	acceptor(io, tcp::endpoint(tcp::v4(), port))
 {
-private:
-	asio::io_context io;
-
-	int port;
-
-public:
-	node(const node_create_info& create_info);
-
-	int run();
-};
+	// TODO: Start listening and sending requests to the p2p network
+	std::cout << "Hello\n";
+}
 
 }
