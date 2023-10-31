@@ -9,13 +9,21 @@ on:
 jobs:
   ubuntu:
     runs-on: ubuntu-latest
+    container: ubuntu:rolling
 
     steps:
     - uses: actions/checkout@v4
     - uses: ammaraskar/gcc-problem-matcher@master
 
     - name: deps
-      run: sudo apt install bash-completion libsodium-dev libboost-dev
+      run: sudo apt install
+        bash-completion
+        build-essential
+        cmake
+        libboost-dev
+        libmsgpack-cxx-dev
+        libsodium-dev
+        pkgconf
 
     - name: configure
       run: cmake -B build
