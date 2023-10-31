@@ -40,9 +40,6 @@ arguments::arguments(int argc, char** argv):
 
 void arguments::parse()
 {
-	if(argc < 2)
-		usage(EXIT_FAILURE);
-
 	int c;
 
 	static const char shortopts[] = "h";

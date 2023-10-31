@@ -22,14 +22,20 @@
 namespace mini_crypto
 {
 
-node::node()
+node::tcp_server::tcp_server(asio::io_context& io):
+	io(io)
+{
+	// TODO: Start listening and sending requests to the p2p network
+	std::cout << "Hello\n";
+}
+
+node::node():
+	server(io)
 {}
 
 int node::run()
 {
-	std::cout << "Hello\n";
-	// TODO: Start listening and sending requests to the p2p network
-
+	io.run();
 	return EXIT_SUCCESS;
 }
 

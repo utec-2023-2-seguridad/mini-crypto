@@ -21,10 +21,24 @@
 namespace mini_crypto
 {
 
+namespace asio = boost::asio;
+
 class node
 {
 private:
-	boost::asio::io_context io;
+	using tcp = asio::ip::tcp;
+
+	class tcp_server
+	{
+	private:
+		asio::io_context& io;
+
+	public:
+		tcp_server(asio::io_context& io);
+	};
+
+	asio::io_context io;
+	tcp_server       server;
 
 public:
 	node();
