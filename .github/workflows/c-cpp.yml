@@ -16,10 +16,11 @@ jobs:
     - uses: ammaraskar/gcc-problem-matcher@master
 
     - name: deps
-      run: sudo apt install
+      run: apt-get -y update && apt-get -y install
         bash-completion
         build-essential
         cmake
+        file
         libboost-dev
         libmsgpack-cxx-dev
         libsodium-dev
