@@ -15,7 +15,7 @@ jobs:
     - uses: ammaraskar/gcc-problem-matcher@master
 
     - name: deps
-      run: sudo apt install bash-completion libsodium-dev
+      run: sudo apt install bash-completion libsodium-dev libboost-dev
 
     - name: configure
       run: cmake -B build

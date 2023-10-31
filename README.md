@@ -9,6 +9,7 @@
 * `bash-completion`
 * `build-essential`
 * `cmake`
+* `libboost-dev`
 * `libsodium-dev`
 * `pkgconf`
 

@@ -52,9 +52,12 @@ pkg_check_modules(libraries
 		libsodium
 )
 
+find_package(Boost REQUIRED)
+
 # Linking
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
+		Boost::headers
 		PkgConfig::libraries
 )
 
