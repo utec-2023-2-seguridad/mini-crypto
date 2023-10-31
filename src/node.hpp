@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "node.hpp"
+#pragma once
 
-#include <sodium.h>
-
-int main()
+namespace mini_crypto
 {
-	if(sodium_init() < 0)
-		return EXIT_FAILURE;
 
-	mini_crypto::node node;
+class node
+{
+private:
 
-	return node.run();
+public:
+	node();
+
+	int run();
+};
+
 }

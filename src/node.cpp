@@ -16,14 +16,21 @@
 
 #include "node.hpp"
 
-#include <sodium.h>
+#include <cstdlib>
+#include <iostream>
 
-int main()
+namespace mini_crypto
 {
-	if(sodium_init() < 0)
-		return EXIT_FAILURE;
 
-	mini_crypto::node node;
+node::node()
+{}
 
-	return node.run();
+int node::run()
+{
+	std::cout << "Hello\n";
+	// TODO: Start listening and sending requests to the p2p network
+
+	return EXIT_SUCCESS;
+}
+
 }
