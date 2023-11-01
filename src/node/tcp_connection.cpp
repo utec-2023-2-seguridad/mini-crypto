@@ -16,6 +16,8 @@
 
 #include "tcp_connection.hpp"
 
+#include <iostream>
+
 namespace mini_crypto
 {
 
@@ -29,12 +31,23 @@ tcp_connection::tcp::socket& tcp_connection::get_socket()
 	return socket;
 }
 
-void tcp_connection::handle_write(std::size_t bytes_transfered)
+void tcp_connection::read()
 {
-	// TODO
+	auto self = shared_from_this();
+
+	socket.async_read_some(
+		asio::buffer(data),
+		[self](boost::system::error_code ec, std::size_t)
+		{
+			if(!ec)
+				self->write();
+			else
+				std::cerr << ec.message() << '\n';
+		}
+	);
 }
 
-void tcp_connection::start()
+void tcp_connection::write()
 {
 	std::string msg = "Hello world\n";
 
@@ -43,12 +56,19 @@ void tcp_connection::start()
 	asio::async_write(
 		socket,
 		asio::buffer(msg),
-		[self](boost::system::error_code ec, std::size_t bytes_transfered)
+		[self](boost::system::error_code ec, std::size_t)
 		{
 			if(!ec)
-				self->handle_write(bytes_transfered);
+				self->read();
+			else
+				std::cerr << ec.message() << '\n';
 		}
 	);
+}
+
+void tcp_connection::start()
+{
+	read();
 }
 
 }

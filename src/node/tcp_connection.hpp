@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <array>
 #include <memory>
 
 #include <boost/asio.hpp>
@@ -33,9 +34,12 @@ private:
 	asio::io_context& io;
 	tcp::socket       socket;
 
+	std::array<char, PIPE_BUF> data;
+
 	tcp_connection(asio::io_context& io);
 
-	void handle_write(std::size_t bytes_transfered);
+	void read();
+	void write();
 
 public:
 	tcp::socket& get_socket();
