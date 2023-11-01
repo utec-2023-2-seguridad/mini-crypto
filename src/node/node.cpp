@@ -18,9 +18,9 @@
 #include "tcp_server.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
-
-#include <boost/url.hpp>
+#include <memory>
 
 namespace mini_crypto
 {
@@ -39,12 +39,12 @@ int node::run()
 	{
 		std::cout << pair << '\n';
 
-		auto url = boost::urls::parse_uri(pair);
+		auto url = parse_url(pair);
 
 		if(!url)
 			continue;
 
-		for(const auto& endpoint: resolver.resolve(url->host(), url->port()))
+		for(const auto& endpoint: resolver.resolve(url->host, url->port))
 		{
 			std::cout << '\t' << endpoint.endpoint() << '\n';
 		}
@@ -56,6 +56,32 @@ int node::run()
 	io.run();
 
 	return EXIT_SUCCESS;
+}
+
+std::optional<node::url> node::parse_url(const std::string& url_string)
+{
+	char* saveptr;
+	char* str_dup = strdup(url_string.c_str());
+
+	url new_url;
+	int i = 0;
+
+	for(char* token = strtok_r(str_dup, ":", &saveptr); token != nullptr; token = strtok_r(nullptr, ":", &saveptr))
+	{
+		if(i == 0)
+			new_url.host = token;
+		else if(i == 1)
+			new_url.port = token;
+
+		i++;
+	}
+
+	free(str_dup);
+
+	if(i == 2)
+		return new_url;
+	else
+		return {};
 }
 
 }

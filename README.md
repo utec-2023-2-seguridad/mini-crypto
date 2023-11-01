@@ -9,7 +9,7 @@
 * `bash-completion`
 * `build-essential`
 * `cmake`
-* `libboost-url1.81-dev`
+* `libboost-dev`
 * `libmsgpack-cxx-dev`
 * `libomp-dev`
 * `libsodium-dev`

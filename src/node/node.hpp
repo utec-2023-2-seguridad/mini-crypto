@@ -31,6 +31,13 @@ namespace asio = boost::asio;
 class node
 {
 private:
+	/// TODO: Replace this with boost url
+	struct url
+	{
+		std::string host;
+		std::string port;
+	};
+
 	using tcp = asio::ip::tcp;
 
 	asio::io_context io;
@@ -38,6 +45,9 @@ private:
 
 	int                      port;
 	std::vector<std::string> pairs;
+
+	/// TODO: Replace this with boost url
+	static std::optional<url> parse_url(const std::string& url_string);
 
 public:
 	node(const node_create_info& create_info);
