@@ -40,6 +40,7 @@ void tcp_server::start_accept()
 		{
 			if(!ec)
 			{
+				std::cerr << "Connection started with: " << connection->get_socket().remote_endpoint() << '\n';
 				connection->start();
 			}
 
