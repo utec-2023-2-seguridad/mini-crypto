@@ -46,7 +46,6 @@ int node::run()
 {
 	tcp_server server(io, port, *this);
 
-	#pragma omp parallel
 	io.run();
 
 	return EXIT_SUCCESS;

@@ -96,9 +96,9 @@ jobs:
         boost
         cmake
         git
-        libomp
         libsodium
         msgpack-cxx
+        #libomp
 
     - name: configure
       run: cmake -B build

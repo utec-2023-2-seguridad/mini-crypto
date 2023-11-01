@@ -18,8 +18,6 @@
 #include "tcp_connection.hpp"
 #include "tcp_server.hpp"
 
-#include "omp.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -65,7 +63,7 @@ void tcp_connection::read()
 
 void tcp_connection::write()
 {
-	std::string msg = "Hello world from " + std::to_string(omp_get_thread_num()) + "\n";
+	std::string msg = "Hello world\n";
 
 	auto self = shared_from_this();
 
