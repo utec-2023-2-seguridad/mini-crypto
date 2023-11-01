@@ -19,6 +19,7 @@
 #include "omp.h"
 
 #include <iostream>
+#include <sstream>
 
 namespace mini_crypto
 {
@@ -27,6 +28,11 @@ tcp_connection::tcp_connection(asio::io_context& io):
 	io(io),
 	socket(io)
 {};
+
+tcp_connection::~tcp_connection()
+{
+	std::cerr << "Connection ended with: " << remote_address << '\n';
+}
 
 tcp_connection::tcp::socket& tcp_connection::get_socket()
 {
@@ -70,6 +76,14 @@ void tcp_connection::write()
 
 void tcp_connection::start()
 {
+	std::stringstream ss;
+
+	ss << socket.remote_endpoint();
+
+	remote_address = ss.str();
+
+	std::cerr << "Connection started with: " << remote_address << '\n';
+
 	read();
 }
 

@@ -33,6 +33,7 @@ private:
 
 	asio::io_context& io;
 	tcp::socket       socket;
+	std::string       remote_address;
 
 	std::array<char, PIPE_BUF> data;
 
@@ -42,6 +43,8 @@ private:
 	void write();
 
 public:
+	~tcp_connection();
+
 	tcp::socket& get_socket();
 
 	void start();

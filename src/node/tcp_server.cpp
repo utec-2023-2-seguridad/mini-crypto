@@ -39,14 +39,9 @@ void tcp_server::start_accept()
 		[this, connection](boost::system::error_code ec)
 		{
 			if(!ec)
-			{
-				std::cerr << "Connection started with: " << connection->get_socket().remote_endpoint() << '\n';
 				connection->start();
-			}
 			else
-			{
 				std::cerr << ec.message() << '\n';
-			}
 
 			start_accept();
 		}
