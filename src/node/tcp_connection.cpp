@@ -16,6 +16,7 @@
 
 #include "node.hpp"
 #include "tcp_connection.hpp"
+#include "tcp_server.hpp"
 
 #include "omp.h"
 
@@ -25,9 +26,9 @@
 namespace mini_crypto
 {
 
-tcp_connection::tcp_connection(asio::io_context& io, node& root):
+tcp_connection::tcp_connection(asio::io_context& io, tcp_server& server):
 	io(io),
-	root(root),
+	server(server),
 	socket(io)
 {};
 
@@ -48,10 +49,14 @@ void tcp_connection::read()
 
 	socket.async_read_some(
 		asio::buffer(data),
-		[self](boost::system::error_code ec, std::size_t)
+		[self](boost::system::error_code ec, std::size_t bytes)
 		{
 			if(!ec)
-				self->write();
+			{
+				std::cout << std::string_view(self->data.data(), bytes) << '\n';
+				//self->write();
+				self->server.broadcast({self->data.data(), bytes});
+			}
 			else
 				std::cerr << ec.message() << '\n';
 		}
@@ -77,7 +82,22 @@ void tcp_connection::write()
 	);
 }
 
-void tcp_connection::start()
+void tcp_connection::broadcast_write(const std::string& msg)
+{
+	auto self = shared_from_this();
+
+	asio::async_write(
+		socket,
+		asio::buffer(msg),
+		[self](boost::system::error_code ec, std::size_t)
+		{
+			if(ec)
+				std::cerr << ec.message() << '\n';
+		}
+	);
+}
+
+void tcp_connection::start_connection()
 {
 	std::stringstream ss;
 
@@ -87,8 +107,18 @@ void tcp_connection::start()
 	remote_address = ss.str();
 
 	std::cerr << "Connection started with: " << remote_address << '\n';
+}
 
+void tcp_connection::start()
+{
+	start_connection();
 	read();
+}
+
+void tcp_connection::start_broadcast(const std::string& msg)
+{
+	start_connection();
+	broadcast_write(msg);
 }
 
 }

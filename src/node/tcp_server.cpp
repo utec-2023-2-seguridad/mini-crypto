@@ -41,19 +41,12 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	);
 
 	start_listening();
-
-	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
-
-	for(auto [_, name, endpoints]: view.each())
-	{
-		connect(name, endpoints);
-	}
-
+	broadcast("Hello world from localhost:" + std::to_string(port));
 }
 
 void tcp_server::start_listening()
 {
-	auto connection = tcp_connection::make(io, root);
+	auto connection = tcp_connection::make(io, *this);
 
 	acceptor.async_accept(
 		connection->get_socket(),
@@ -74,21 +67,31 @@ void tcp_server::stop(boost::system::error_code, int)
 	io.stop();
 }
 
-void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints)
+void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, const std::string& msg)
 {
-	auto connection = tcp_connection::make(io, root);
+	auto connection = tcp_connection::make(io, *this);
 
 	asio::async_connect(
 		connection->get_socket(),
 		endpoints,
-		[connection, name](boost::system::error_code ec, const tcp::endpoint&)
+		[connection, name, msg](boost::system::error_code ec, const tcp::endpoint&)
 		{
 			if(!ec)
-				connection->start();
+				connection->start_broadcast(msg);
 			else
 				std::cerr << ec.message() << ": " << name << '\n';
 		}
 	);
+}
+
+void tcp_server::broadcast(const std::string& msg)
+{
+	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
+
+	for(auto [_, name, endpoints]: view.each())
+	{
+		connect(name, endpoints, msg);
+	}
 }
 
 }

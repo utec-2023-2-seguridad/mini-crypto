@@ -44,7 +44,10 @@ private:
 public:
 	tcp_server(asio::io_context& io, int port, node& root);
 
-	void connect(const std::string& name, const tcp::resolver::results_type& endpoints);
+	void connect(const std::string& name, const tcp::resolver::results_type& endpoints, const std::string& msg);
+	void broadcast(const std::string& msg);
+
+	friend class tcp_connection;
 };
 
 }
