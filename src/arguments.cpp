@@ -82,7 +82,7 @@ node_create_info arguments::get_node_create_info() const
 {
 	return {
 		.port  = port,
-		.pairs = {pairs.begin(), pairs.end()},
+		.pairs = std::span<const std::string>(&pairs.front(), pairs.size()),
 	};
 }
 
