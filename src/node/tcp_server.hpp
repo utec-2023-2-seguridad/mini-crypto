@@ -34,9 +34,12 @@ private:
 
 	asio::io_context& io;
 	node&             root;
-	tcp::acceptor     acceptor;
+
+	tcp::acceptor    acceptor;
+	asio::signal_set signals;
 
 	void start_listening();
+	void stop(boost::system::error_code ec, int signal);
 
 public:
 	tcp_server(asio::io_context& io, int port, node& root);

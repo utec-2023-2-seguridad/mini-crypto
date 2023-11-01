@@ -24,6 +24,8 @@
 namespace mini_crypto
 {
 
+class node;
+
 namespace asio = boost::asio;
 
 class tcp_connection: public std::enable_shared_from_this<tcp_connection>
@@ -32,6 +34,7 @@ private:
 	using tcp = asio::ip::tcp;
 
 	asio::io_context& io;
+	node&             root;
 	tcp::socket       socket;
 
 	bool        started = false;
@@ -39,7 +42,7 @@ private:
 
 	std::array<char, PIPE_BUF> data;
 
-	tcp_connection(asio::io_context& io);
+	tcp_connection(asio::io_context& io, node& root);
 
 	void read();
 	void write();

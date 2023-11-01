@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "node.hpp"
 #include "tcp_connection.hpp"
 
 #include "omp.h"
@@ -24,8 +25,9 @@
 namespace mini_crypto
 {
 
-tcp_connection::tcp_connection(asio::io_context& io):
+tcp_connection::tcp_connection(asio::io_context& io, node& root):
 	io(io),
+	root(root),
 	socket(io)
 {};
 

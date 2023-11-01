@@ -27,8 +27,19 @@ namespace mini_crypto
 tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	io(io),
 	root(root),
-	acceptor(io, tcp::endpoint(tcp::v4(), port))
+	acceptor(io, tcp::endpoint(tcp::v4(), port)),
+	signals(io)
 {
+	signals.add(SIGINT);
+	signals.add(SIGTERM);
+
+	signals.async_wait(
+		[this](boost::system::error_code ec, int signal)
+		{
+			stop(ec, signal);
+		}
+	);
+
 	start_listening();
 
 	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
@@ -42,7 +53,7 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 
 void tcp_server::start_listening()
 {
-	auto connection = tcp_connection::make(io);
+	auto connection = tcp_connection::make(io, root);
 
 	acceptor.async_accept(
 		connection->get_socket(),
@@ -58,9 +69,14 @@ void tcp_server::start_listening()
 	);
 }
 
+void tcp_server::stop(boost::system::error_code, int)
+{
+	io.stop();
+}
+
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints)
 {
-	auto connection = tcp_connection::make(io);
+	auto connection = tcp_connection::make(io, root);
 
 	asio::async_connect(
 		connection->get_socket(),
