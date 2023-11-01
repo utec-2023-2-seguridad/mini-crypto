@@ -27,35 +27,60 @@ namespace mini_crypto
 
 node::node(const node_create_info& create_info):
 	resolver(io),
-	port(create_info.port),
-	pairs(create_info.pairs.begin(), create_info.pairs.end())
-{}
+	port(create_info.port)
+{
+	entt::sigh_helper{registry}
+		.with<std::string>()
+			.on_construct<&node::parse_pair_url>(*this)
+	;
+
+	for(const auto& pair: create_info.pairs)
+	{
+		entt::entity pair_e = registry.create();
+
+		registry.emplace<std::string>(pair_e, pair);
+	}
+}
 
 int node::run()
 {
 	tcp_server server(io, port);
 
-	for(const auto& pair: pairs)
+	for(auto [_, name, endpoints]: registry.view<std::string, tcp::resolver::results_type>().each())
 	{
-		std::cout << pair << '\n';
+		std::cout << name << '\n';
 
-		auto url = parse_url(pair);
-
-		if(!url)
-			continue;
-
-		for(const auto& endpoint: resolver.resolve(url->host, url->port))
+		for(const auto& endpoint: endpoints)
 		{
 			std::cout << '\t' << endpoint.endpoint() << '\n';
 		}
-
-		// TODO: Connect to pair
 	}
 
 	#pragma omp parallel
 	io.run();
 
 	return EXIT_SUCCESS;
+}
+
+void node::parse_pair_url(entt::registry& registry, entt::entity entity)
+{
+	auto pair = registry.get<std::string>(entity);
+
+	auto url = parse_url(pair);
+
+	if(!url)
+		return;
+
+	boost::system::error_code ec;
+	auto endpoints = resolver.resolve(url->host, url->port, ec);
+
+	if(ec)
+	{
+		std::cerr << ec.what() << '\n';
+		return;
+	}
+
+	registry.emplace<tcp::resolver::results_type>(entity, std::move(endpoints));
 }
 
 std::optional<node::url> node::parse_url(const std::string& url_string)

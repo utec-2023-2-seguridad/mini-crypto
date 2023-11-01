@@ -19,6 +19,7 @@
 #include "node_create_info.hpp"
 
 #include <boost/asio.hpp>
+#include <entt/entt.hpp>
 
 #include <string>
 #include <vector>
@@ -43,8 +44,11 @@ private:
 	asio::io_context io;
 	tcp::resolver    resolver;
 
-	int                      port;
-	std::vector<std::string> pairs;
+	int port;
+
+	entt::registry registry;
+
+	void parse_pair_url(entt::registry& registry, entt::entity entity);
 
 	/// TODO: Replace this with boost url
 	static std::optional<url> parse_url(const std::string& url_string);

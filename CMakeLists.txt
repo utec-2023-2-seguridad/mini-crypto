@@ -87,6 +87,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	target_precompile_headers(${PROJECT_NAME}
 		PRIVATE
 			<boost/asio.hpp>
+			<entt/entt.hpp>
 	)
 endif()
 
