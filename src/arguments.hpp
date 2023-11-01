@@ -18,6 +18,9 @@
 
 #include "node/node_create_info.hpp"
 
+#include <string>
+#include <vector>
+
 namespace mini_crypto
 {
 
