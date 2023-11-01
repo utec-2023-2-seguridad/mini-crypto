@@ -76,19 +76,13 @@ void arguments::parse()
 	{
 		pairs.emplace_back(argv[i]);
 	}
-
-	if(pairs.empty())
-	{
-		std::cerr << "Missing pairs\n";
-		usage(EXIT_FAILURE);
-	}
 }
 
 node_create_info arguments::get_node_create_info() const
 {
 	return {
 		.port  = port,
-		.pairs = pairs,
+		.pairs = {pairs.begin(), pairs.end()},
 	};
 }
 

@@ -17,15 +17,15 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <span>
 
 namespace mini_crypto
 {
 
 struct node_create_info
 {
-	int                      port;
-	std::vector<std::string> pairs;
+	int                          port;
+	std::span<const std::string> pairs;
 };
 
 }

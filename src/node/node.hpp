@@ -20,6 +20,9 @@
 
 #include <boost/asio.hpp>
 
+#include <string>
+#include <vector>
+
 namespace mini_crypto
 {
 
@@ -28,9 +31,13 @@ namespace asio = boost::asio;
 class node
 {
 private:
-	asio::io_context io;
+	using tcp = asio::ip::tcp;
 
-	int port;
+	asio::io_context io;
+	tcp::resolver    resolver;
+
+	int                      port;
+	std::vector<std::string> pairs;
 
 public:
 	node(const node_create_info& create_info);

@@ -18,17 +18,39 @@
 #include "tcp_server.hpp"
 
 #include <cstdlib>
+#include <iostream>
+
+#include <boost/url.hpp>
 
 namespace mini_crypto
 {
 
 node::node(const node_create_info& create_info):
-	port(create_info.port)
+	resolver(io),
+	port(create_info.port),
+	pairs(create_info.pairs.begin(), create_info.pairs.end())
 {}
 
 int node::run()
 {
 	tcp_server server(io, port);
+
+	for(const auto& pair: pairs)
+	{
+		std::cout << pair << '\n';
+
+		auto url = boost::urls::parse_uri(pair);
+
+		if(!url)
+			continue;
+
+		for(const auto& endpoint: resolver.resolve(url->host(), url->port()))
+		{
+			std::cout << '\t' << endpoint.endpoint() << '\n';
+		}
+
+		// TODO: Connect to pair
+	}
 
 	#pragma omp parallel
 	io.run();
