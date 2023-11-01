@@ -11,7 +11,7 @@ arch=('x86_64')
 url="https://github.com/utec-2023-2-seguridad/mini-crypto"
 license=('GPL3')
 groups=()
-depends=('gcc-libs' 'libsodium' 'boost-libs' 'openmp')
+depends=('gcc-libs' 'libsodium' 'boost-libs')
 makedepends=(
 	'bash-completion'
 	'boost'
