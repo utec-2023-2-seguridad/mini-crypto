@@ -16,12 +16,16 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 namespace mini_crypto
 {
 
 struct node_create_info
 {
-	int port;
+	int                      port;
+	std::vector<std::string> pairs;
 };
 
 }

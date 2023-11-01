@@ -27,7 +27,8 @@ private:
 	int    argc;
 	char** argv;
 
-	int port;
+	int                      port;
+	std::vector<std::string> pairs;
 
 	[[noreturn]]
 	void usage(int exit_code) const;

@@ -26,7 +26,7 @@ namespace mini_crypto
 void arguments::usage(int exit_code) const
 {
 	std::cout
-		<< "Usage: " << argv[0] << " [OPTION]...\n"
+		<< "Usage: " << argv[0] << " [OPTION]... PAIRS...\n"
 		<< "\t-h, --help      Show this help.\n"
 		<< "\t-p, --port=PORT Listening port.\n"
 	;
@@ -71,12 +71,24 @@ void arguments::parse()
 				usage(EXIT_FAILURE);
 		}
 	}
+
+	for(int i = optind; i < argc; i++)
+	{
+		pairs.emplace_back(argv[i]);
+	}
+
+	if(pairs.empty())
+	{
+		std::cerr << "Missing pairs\n";
+		usage(EXIT_FAILURE);
+	}
 }
 
 node_create_info arguments::get_node_create_info() const
 {
 	return {
-		.port = port
+		.port  = port,
+		.pairs = pairs,
 	};
 }
 
