@@ -76,7 +76,7 @@ void node::parse_pair_url(entt::registry& registry, entt::entity entity)
 
 	if(ec)
 	{
-		std::cerr << ec.what() << '\n';
+		std::cerr << ec.message() << '\n';
 		return;
 	}
 
