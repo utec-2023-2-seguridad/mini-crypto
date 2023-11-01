@@ -21,7 +21,7 @@ jobs:
         build-essential
         cmake
         file
-        libboost-dev
+        libboost-url1.81-dev
         libmsgpack-cxx-dev
         libomp-dev
         libsodium-dev

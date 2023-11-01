@@ -52,7 +52,10 @@ pkg_check_modules(libraries
 		libsodium
 )
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED
+	COMPONENTS
+		url
+)
 find_package(OpenMP REQUIRED)
 #find_package(msgpackc-cxx REQUIRED)
 
@@ -60,6 +63,7 @@ find_package(OpenMP REQUIRED)
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		Boost::headers
+		Boost::url
 		OpenMP::OpenMP_CXX
 		PkgConfig::libraries
 		#msgpackc-cxx
