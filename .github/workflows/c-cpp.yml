@@ -21,6 +21,7 @@ jobs:
         build-essential
         cmake
         file
+        git
         libboost-dev
         libmsgpack-cxx-dev
         libomp-dev

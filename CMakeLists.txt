@@ -27,9 +27,10 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-include(GNUInstallDirs)
-include(FindPkgConfig)
+Include(FetchContent)
 include(CPack)
+include(FindPkgConfig)
+include(GNUInstallDirs)
 
 # The program itself
 add_executable(${PROJECT_NAME})
@@ -52,7 +53,17 @@ pkg_check_modules(libraries
 		libsodium
 )
 
+FetchContent_Declare(
+	EnTT
+	GIT_REPOSITORY https://github.com/skypjack/entt
+	GIT_TAG        v3.12.2
+	OVERRIDE_FIND_PACKAGE
+)
+
+FetchContent_MakeAvailable(EnTT)
+
 find_package(Boost REQUIRED)
+find_package(EnTT REQUIRED)
 find_package(OpenMP REQUIRED)
 #find_package(msgpackc-cxx REQUIRED)
 
@@ -60,6 +71,7 @@ find_package(OpenMP REQUIRED)
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		Boost::headers
+		EnTT::EnTT
 		OpenMP::OpenMP_CXX
 		PkgConfig::libraries
 		#msgpackc-cxx
