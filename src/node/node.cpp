@@ -30,7 +30,7 @@ node::node(const node_create_info& create_info):
 	port(create_info.port)
 {
 	entt::sigh_helper{registry}
-		.with<std::string>()
+		.with<name_t>()
 			.on_construct<&node::parse_pair_url>(*this)
 	;
 
@@ -38,7 +38,7 @@ node::node(const node_create_info& create_info):
 	{
 		entt::entity pair_e = registry.create();
 
-		registry.emplace<std::string>(pair_e, pair);
+		registry.emplace<name_t>(pair_e, pair);
 	}
 }
 
@@ -46,7 +46,7 @@ int node::run()
 {
 	tcp_server server(io, port);
 
-	for(auto [_, name, endpoints]: registry.view<std::string, tcp::resolver::results_type>().each())
+	for(const auto [_, name, endpoints]: registry.view<name_t, endpoints_t>().each())
 	{
 		std::cout << name << '\n';
 
@@ -64,9 +64,7 @@ int node::run()
 
 void node::parse_pair_url(entt::registry& registry, entt::entity entity)
 {
-	auto pair = registry.get<std::string>(entity);
-
-	auto url = parse_url(pair);
+	auto url = parse_url(registry.get<name_t>(entity));
 
 	if(!url)
 		return;
@@ -80,7 +78,7 @@ void node::parse_pair_url(entt::registry& registry, entt::entity entity)
 		return;
 	}
 
-	registry.emplace<tcp::resolver::results_type>(entity, std::move(endpoints));
+	registry.emplace<endpoints_t>(entity, std::move(endpoints));
 }
 
 std::optional<node::url> node::parse_url(const std::string& url_string)

@@ -41,6 +41,9 @@ private:
 
 	using tcp = asio::ip::tcp;
 
+	using name_t      = std::string;
+	using endpoints_t = tcp::resolver::results_type;
+
 	asio::io_context io;
 	tcp::resolver    resolver;
 
