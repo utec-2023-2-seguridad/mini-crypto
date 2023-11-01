@@ -31,7 +31,8 @@ tcp_connection::tcp_connection(asio::io_context& io):
 
 tcp_connection::~tcp_connection()
 {
-	std::cerr << "Connection ended with: " << remote_address << '\n';
+	if(started)
+		std::cerr << "Connection ended with: " << remote_address << '\n';
 }
 
 tcp_connection::tcp::socket& tcp_connection::get_socket()
@@ -80,6 +81,7 @@ void tcp_connection::start()
 
 	ss << socket.remote_endpoint();
 
+	started        = true;
 	remote_address = ss.str();
 
 	std::cerr << "Connection started with: " << remote_address << '\n';

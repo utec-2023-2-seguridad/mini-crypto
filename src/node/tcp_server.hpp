@@ -18,8 +18,12 @@
 
 #include <boost/asio.hpp>
 
+#include <string>
+
 namespace mini_crypto
 {
+
+class node;
 
 namespace asio = boost::asio;
 
@@ -29,12 +33,15 @@ private:
 	using tcp = asio::ip::tcp;
 
 	asio::io_context& io;
+	node&             root;
 	tcp::acceptor     acceptor;
 
-	void start_accept();
+	void start_listening();
 
 public:
-	tcp_server(asio::io_context& io, int port);
+	tcp_server(asio::io_context& io, int port, node& root);
+
+	void connect(const std::string& name, const tcp::resolver::results_type& endpoints);
 };
 
 }

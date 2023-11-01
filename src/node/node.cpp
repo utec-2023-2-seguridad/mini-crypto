@@ -44,17 +44,7 @@ node::node(const node_create_info& create_info):
 
 int node::run()
 {
-	tcp_server server(io, port);
-
-	for(const auto [_, name, endpoints]: registry.view<name_t, endpoints_t>().each())
-	{
-		std::cout << name << '\n';
-
-		for(const auto& endpoint: endpoints)
-		{
-			std::cout << '\t' << endpoint.endpoint() << '\n';
-		}
-	}
+	tcp_server server(io, port, *this);
 
 	#pragma omp parallel
 	io.run();
@@ -105,6 +95,11 @@ std::optional<node::url> node::parse_url(const std::string& url_string)
 		return new_url;
 	else
 		return {};
+}
+
+entt::registry& node::get_registry()
+{
+	return registry;
 }
 
 }

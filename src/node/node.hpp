@@ -41,9 +41,6 @@ private:
 
 	using tcp = asio::ip::tcp;
 
-	using name_t      = std::string;
-	using endpoints_t = tcp::resolver::results_type;
-
 	asio::io_context io;
 	tcp::resolver    resolver;
 
@@ -57,9 +54,14 @@ private:
 	static std::optional<url> parse_url(const std::string& url_string);
 
 public:
+	using name_t      = std::string;
+	using endpoints_t = tcp::resolver::results_type;
+
 	node(const node_create_info& create_info);
 
 	int run();
+
+	entt::registry& get_registry();
 };
 
 }
