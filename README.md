@@ -11,6 +11,7 @@
 * `cmake`
 * `libboost-dev`
 * `libmsgpack-cxx-dev`
+* `libomp-dev`
 * `libsodium-dev`
 * `pkgconf`
 

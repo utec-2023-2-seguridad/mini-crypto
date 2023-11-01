@@ -53,12 +53,14 @@ pkg_check_modules(libraries
 )
 
 find_package(Boost REQUIRED)
+find_package(OpenMP REQUIRED)
 #find_package(msgpackc-cxx REQUIRED)
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		Boost::headers
+		OpenMP::OpenMP_CXX
 		PkgConfig::libraries
 		#msgpackc-cxx
 )

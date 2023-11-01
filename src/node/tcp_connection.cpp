@@ -16,6 +16,8 @@
 
 #include "tcp_connection.hpp"
 
+#include "omp.h"
+
 #include <iostream>
 
 namespace mini_crypto
@@ -49,7 +51,7 @@ void tcp_connection::read()
 
 void tcp_connection::write()
 {
-	std::string msg = "Hello world\n";
+	std::string msg = "Hello world from " + std::to_string(omp_get_thread_num()) + "\n";
 
 	auto self = shared_from_this();
 
