@@ -27,8 +27,25 @@ tcp_server::tcp_server(asio::io_context& io, int port):
 	io(io),
 	acceptor(io, tcp::endpoint(tcp::v4(), port))
 {
-	// TODO: Start listening and sending requests to the p2p network
-	std::cout << "Hello\n";
+	start_accept();
+}
+
+void tcp_server::start_accept()
+{
+	auto connection = tcp_connection::make(io);
+
+	acceptor.async_accept(
+		connection->get_socket(),
+		[this, connection](boost::system::error_code ec)
+		{
+			if(!ec)
+			{
+				connection->start();
+			}
+
+			start_accept();
+		}
+	);
 }
 
 }

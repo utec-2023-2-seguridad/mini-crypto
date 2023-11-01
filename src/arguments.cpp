@@ -42,7 +42,7 @@ arguments::arguments(int argc, char** argv):
 void arguments::parse()
 {
 	if(argc < 2)
-		exit(EXIT_FAILURE);
+		usage(EXIT_FAILURE);
 
 	int c;
 

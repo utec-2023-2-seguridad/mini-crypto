@@ -31,6 +31,8 @@ private:
 	asio::io_context& io;
 	tcp::acceptor     acceptor;
 
+	void start_accept();
+
 public:
 	tcp_server(asio::io_context& io, int port);
 };

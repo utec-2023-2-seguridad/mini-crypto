@@ -29,14 +29,26 @@ tcp_connection::tcp::socket& tcp_connection::get_socket()
 	return socket;
 }
 
-void tcp_connection::handle_write()
+void tcp_connection::handle_write(std::size_t bytes_transfered)
 {
 	// TODO
 }
 
 void tcp_connection::start()
 {
-	// TODO
+	std::string msg = "Hello world\n";
+
+	auto self = shared_from_this();
+
+	asio::async_write(
+		socket,
+		asio::buffer(msg),
+		[self](boost::system::error_code ec, std::size_t bytes_transfered)
+		{
+			if(!ec)
+				self->handle_write(bytes_transfered);
+		}
+	);
 }
 
 }

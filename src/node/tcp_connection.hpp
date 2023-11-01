@@ -35,10 +35,11 @@ private:
 
 	tcp_connection(asio::io_context& io);
 
+	void handle_write(std::size_t bytes_transfered);
+
 public:
 	tcp::socket& get_socket();
 
-	void handle_write();
 	void start();
 
 	template <typename... Args>
