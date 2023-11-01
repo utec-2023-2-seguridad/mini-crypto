@@ -82,3 +82,33 @@ jobs:
       with:
         name: arch_package
         path: pkg/arch/*.pkg.tar.*
+
+  macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ammaraskar/gcc-problem-matcher@master
+
+    - name: deps
+      run: brew install
+        bash-completion@2
+        boost
+        cmake
+        git
+        libomp
+        libsodium
+        msgpack-cxx
+
+    - name: configure
+      run: cmake -B build
+        -DCMAKE_CXX_FLAGS="-O2 -pipe -fno-plt -Wall -Wextra"
+        -DCMAKE_C_FLAGS="-O2 -pipe -fno-plt -Wall -Wextra"
+        -DCMAKE_BUILD_TYPE=None
+        -DCMAKE_INSTALL_PREFIX=/usr
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+
+    - name: build
+      run: |
+          export MAKEFLAGS=-j$(sysctl -n hw.logicalcpu)
+          cmake --build build
