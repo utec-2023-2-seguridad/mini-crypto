@@ -3,7 +3,7 @@
 # shellcheck shell=bash disable=SC2034,SC2154,SC2164
 
 pkgname=mini-crypto-git
-pkgver=v0.0.0
+pkgver=r41.66044ee
 pkgrel=1
 epoch=
 pkgdesc="Toy blockchain"
@@ -41,11 +41,16 @@ build() {
 		-DCMAKE_BUILD_TYPE='None' \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
-		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-DCMAKE_UNITY_BUILD=ON
 
 	cmake --build build
 }
 
 package() {
 	DESTDIR="$pkgdir" cmake --install build
+
+	# https://stackoverflow.com/a/77320297
+	rm -r "$pkgdir"/usr/include
+	rm -r "$pkgdir"/usr/lib
 }
