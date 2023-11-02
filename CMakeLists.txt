@@ -82,6 +82,11 @@ target_compile_options(${PROJECT_NAME}
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra>
 )
 
+target_compile_definitions(${PROJECT_NAME}
+	PRIVATE
+		$<$<NOT:$<CONFIG:DEBUG>>:NDEBUG>
+)
+
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	target_precompile_headers(${PROJECT_NAME}
 		PRIVATE
