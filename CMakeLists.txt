@@ -64,17 +64,16 @@ FetchContent_MakeAvailable(EnTT)
 
 find_package(Boost REQUIRED)
 find_package(EnTT REQUIRED)
-#find_package(OpenMP)
-#find_package(msgpackc-cxx REQUIRED)
+find_package(msgpackc-cxx QUIET) # https://github.com/msgpack/msgpack-c/pull/1054
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		Boost::headers
 		EnTT::EnTT
-		#OpenMP::OpenMP_CXX
 		PkgConfig::libraries
-		#msgpackc-cxx
+	INTERFACE
+		msgpackc-cxx
 )
 
 # Default flags
