@@ -85,6 +85,7 @@ target_compile_options(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME}
 	PRIVATE
 		$<$<NOT:$<CONFIG:DEBUG>>:NDEBUG>
+		BOOST_ASIO_SEPARATE_COMPILATION
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")

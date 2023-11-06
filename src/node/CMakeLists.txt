@@ -16,6 +16,7 @@
 
 target_sources(${PROJECT_NAME}
 	PRIVATE
+		boost.cpp
 		node.cpp
 		tcp_connection.cpp
 		tcp_server.cpp
