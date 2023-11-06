@@ -40,7 +40,7 @@ private:
 	bool        started = false;
 	std::string remote_address;
 
-	std::array<char, PIPE_BUF> data;
+	asio::streambuf buffer;
 
 	tcp_connection(asio::io_context& io, tcp_server& root);
 

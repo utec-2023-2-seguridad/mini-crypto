@@ -47,15 +47,16 @@ void tcp_connection::read()
 {
 	auto self = shared_from_this();
 
-	socket.async_read_some(
-		asio::buffer(data),
-		[self](boost::system::error_code ec, std::size_t bytes)
+	asio::async_read_until(socket, buffer, EOF,
+		[self](boost::system::error_code ec, std::size_t)
 		{
-			if(!ec)
+			if(!ec || ec == asio::error::eof)
 			{
-				std::cout << std::string_view(self->data.data(), bytes) << '\n';
-				//self->write();
-				self->server.broadcast({self->data.data(), bytes});
+				std::string msg(asio::buffer_cast<const char*>(self->buffer.data()), self->buffer.size());
+
+				std::cout << msg << '\n';
+
+				self->server.broadcast(msg);
 			}
 			else
 				std::cerr << ec.message() << '\n';
