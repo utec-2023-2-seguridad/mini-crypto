@@ -23,10 +23,10 @@ jobs:
         file
         git
         libboost-dev
-        libmsgpack-cxx-dev
         libomp-dev
         libsodium-dev
         pkgconf
+        rapidjson-dev
 
     - name: configure
       run: cmake -B build
@@ -97,8 +97,7 @@ jobs:
         cmake
         git
         libsodium
-        msgpack-cxx
-        #libomp
+        rapidjson
 
     - name: configure
       run: cmake -B build

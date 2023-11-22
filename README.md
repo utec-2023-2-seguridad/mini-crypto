@@ -10,7 +10,7 @@
 * `build-essential`
 * `cmake`
 * `libboost-dev`
-* `libmsgpack-cxx-dev`
+* `rapidjson-dev`
 * `libsodium-dev`
 * `pkgconf`
 

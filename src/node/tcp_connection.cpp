@@ -18,8 +18,6 @@
 #include "tcp_connection.hpp"
 #include "tcp_server.hpp"
 
-#include <msgpack.hpp>
-
 #include <iostream>
 #include <sstream>
 

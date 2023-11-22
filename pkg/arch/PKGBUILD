@@ -17,7 +17,7 @@ makedepends=(
 	'boost'
 	'cmake'
 	'git'
-	'msgpack-cxx'
+	'rapidjson'
 )
 checkdepends=()
 optdepends=()
