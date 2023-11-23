@@ -23,7 +23,15 @@ void pairs::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
 	writer.StartObject();
 
-	// TODO
+	writer.Key("urls");
+	writer.StartArray();
+
+	for(const auto& url: urls)
+	{
+		writer.String(url);
+	}
+
+	writer.EndArray();
 
 	writer.EndObject();
 }
@@ -33,9 +41,15 @@ bool pairs::load(const rapidjson::Value& value)
 	if(!value.IsObject())
 		return false;
 
-	if(auto name = value.FindMember("urls"); name != value.MemberEnd() && name->value.IsString())
+	if(auto urls = value.FindMember("urls"); urls != value.MemberEnd() && urls->value.IsArray())
 	{
-		// TODO
+		for(const auto& url: urls->value.GetArray())
+		{
+			if(url.IsString())
+			{
+				this->urls.emplace_back(url.GetString());
+			}
+		}
 	}
 
 	return true;
