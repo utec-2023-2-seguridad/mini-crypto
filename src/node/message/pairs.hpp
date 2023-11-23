@@ -26,6 +26,8 @@ namespace mini_crypto::message
 
 struct pairs: public base
 {
+	static constexpr const char* name = "pairs";
+
 	std::vector<std::string> urls;
 
 	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;

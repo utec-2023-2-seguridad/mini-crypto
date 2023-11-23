@@ -23,6 +23,16 @@
 namespace mini_crypto::message
 {
 
+handle::handle(const char* data, size_t size)
+{
+	using namespace rapidjson;
+
+	Document document;
+	document.Parse(data, size);
+
+	load(document);
+}
+
 void handle::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
 	writer.StartObject();
@@ -61,7 +71,7 @@ std::unique_ptr<base> handle::name2ptr(const std::string& name)
 {
 	static const std::unordered_map<std::string, std::function<std::unique_ptr<base>()>> m =
 	{
-		{"pairs", [](){return std::make_unique<pairs>();}}
+		{pairs::name, [](){return std::make_unique<pairs>();}}
 	};
 
 	auto it = m.find(name);

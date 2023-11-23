@@ -28,7 +28,9 @@ struct base
 {
 	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const = 0;
 
-	virtual std::string dump() const
+	virtual bool load(const rapidjson::Value& value) = 0;
+
+	std::string dump() const
 	{
 		using namespace rapidjson;
 
@@ -39,8 +41,6 @@ struct base
 
 		return s.GetString();
 	}
-
-	virtual bool load(const rapidjson::Value& value) = 0;
 
 	virtual ~base() {};
 };
