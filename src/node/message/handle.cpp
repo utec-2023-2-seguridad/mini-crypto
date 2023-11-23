@@ -14,23 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
-
-#include <memory>
-#include <string>
-
-#include "base.hpp"
+#include "handle.hpp"
 
 namespace mini_crypto::message
 {
 
-struct handle: public base
+void handle::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
-	std::string           name;
-	std::unique_ptr<base> data;
+	writer.StartObject();
 
-	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
-	virtual bool load(const rapidjson::Value& value);
-};
+	writer.Key("name");
+	writer.String(name);
+
+	writer.Key("data");
+	data->dump(writer);
+
+	writer.EndObject();
+}
+
+bool handle::load(const rapidjson::Value& value)
+{
+	if(!value.IsObject())
+		return false;
+
+	if(auto name = value.FindMember("name"); name != value.MemberEnd() && name->value.IsString())
+	{
+		this->name = name->value.GetString();
+	}
+
+	if(auto name = value.FindMember("data"); name != value.MemberEnd() && name->value.IsObject())
+	{
+		// TODO
+	}
+
+	return true;
+}
 
 }
