@@ -19,6 +19,8 @@
 #include <memory>
 #include <string>
 
+#include <boost/asio.hpp>
+
 #include "base.hpp"
 
 namespace mini_crypto::message
@@ -30,6 +32,7 @@ struct handle: public base
 	std::unique_ptr<base> data;
 
 	handle(const char* data, size_t size);
+	handle(const boost::asio::streambuf& sb);
 
 	template<typename Type, typename... Args>
 	handle(Args &&... args)

@@ -33,6 +33,11 @@ handle::handle(const char* data, size_t size)
 	load(document);
 }
 
+handle::handle(const boost::asio::streambuf& sb):
+	handle(boost::asio::buffer_cast<const char*>(sb.data()), sb.size())
+{
+}
+
 void handle::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
 	writer.StartObject();

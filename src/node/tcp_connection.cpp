@@ -17,6 +17,7 @@
 #include "node.hpp"
 #include "tcp_connection.hpp"
 #include "tcp_server.hpp"
+#include "message/handle.hpp"
 
 #include <iostream>
 #include <sstream>
