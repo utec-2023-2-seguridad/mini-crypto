@@ -16,33 +16,22 @@
 
 #pragma once
 
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-
 #include <string>
+#include <vector>
+
+#include "base.hpp"
 
 namespace mini_crypto::message
 {
 
-struct base
+struct pairs: public base
 {
-	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const = 0;
+	std::vector<std::string> urls;
 
-	virtual std::string dump() const
-	{
-		using namespace rapidjson;
+	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+	virtual bool load(const rapidjson::Value& value);
 
-		StringBuffer s;
-		Writer<StringBuffer> writer;
-
-		dump(writer);
-
-		return s.GetString();
-	}
-
-	virtual bool load(const rapidjson::Value& value) = 0;
-
-	virtual ~base() {};
+	virtual ~pairs() {};
 };
 
 }

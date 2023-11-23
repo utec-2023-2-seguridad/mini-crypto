@@ -14,35 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
-
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-
-#include <string>
+#include "pairs.hpp"
 
 namespace mini_crypto::message
 {
 
-struct base
+void pairs::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
-	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const = 0;
+	writer.StartObject();
 
-	virtual std::string dump() const
+	// TODO
+
+	writer.EndObject();
+}
+
+bool pairs::load(const rapidjson::Value& value)
+{
+	if(!value.IsObject())
+		return false;
+
+	if(auto name = value.FindMember("urls"); name != value.MemberEnd() && name->value.IsString())
 	{
-		using namespace rapidjson;
-
-		StringBuffer s;
-		Writer<StringBuffer> writer;
-
-		dump(writer);
-
-		return s.GetString();
+		// TODO
 	}
 
-	virtual bool load(const rapidjson::Value& value) = 0;
-
-	virtual ~base() {};
-};
+	return true;
+}
 
 }

@@ -31,6 +31,11 @@ struct handle: public base
 
 	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
 	virtual bool load(const rapidjson::Value& value);
+
+	virtual ~handle() {};
+
+private:
+	static std::unique_ptr<base> name2ptr(const std::string& name);
 };
 
 }

@@ -15,6 +15,10 @@
 // along with mini-crypto.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "handle.hpp"
+#include "pairs.hpp"
+
+#include <functional>
+#include <unordered_map>
 
 namespace mini_crypto::message
 {
@@ -44,10 +48,28 @@ bool handle::load(const rapidjson::Value& value)
 
 	if(auto name = value.FindMember("data"); name != value.MemberEnd() && name->value.IsObject())
 	{
-		// TODO
+		if(!(data = name2ptr(name->value.GetString())))
+			return false;
+
+		data->load(name->value);
 	}
 
 	return true;
+}
+
+std::unique_ptr<base> handle::name2ptr(const std::string& name)
+{
+	static const std::unordered_map<std::string, std::function<std::unique_ptr<base>()>> m =
+	{
+		{"pairs", [](){return std::make_unique<pairs>();}}
+	};
+
+	auto it = m.find(name);
+
+	if(it != m.end())
+		return it->second();
+
+	return nullptr;
 }
 
 }
