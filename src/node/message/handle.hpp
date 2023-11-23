@@ -31,14 +31,14 @@ struct handle: public base
 	std::string           name;
 	std::unique_ptr<base> data;
 
+	handle(const std::string& name, std::unique_ptr<base>&& data);
 	handle(const char* data, size_t size);
 	handle(const boost::asio::streambuf& sb);
 
 	template<typename Type, typename... Args>
-	handle(Args &&... args)
+	static handle make(Args &&... args)
 	{
-		name = Type::name;
-		data = std::make_unique<Type>(std::forward<Args>(args)...);
+		return {Type::name, std::make_unique<Type>(std::forward<Args>(args)...)};
 	}
 
 	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;

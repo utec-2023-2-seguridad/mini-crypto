@@ -17,7 +17,7 @@
 #include "node.hpp"
 #include "tcp_connection.hpp"
 #include "tcp_server.hpp"
-#include "message/handle.hpp"
+#include "message.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -51,11 +51,21 @@ void tcp_connection::read()
 		{
 			if(!ec || ec == asio::error::eof)
 			{
-				std::string msg(asio::buffer_cast<const char*>(self->buffer.data()), self->buffer.size());
+				message::handle msg(self->buffer);
 
-				std::cout << msg << '\n';
+				if(msg.name == message::pairs::name)
+				{
+					auto& pairs = dynamic_cast<message::pairs&>(*msg.data.get());
 
-				self->server.broadcast(msg);
+					pairs.jumps_left--;
+					for(const auto& url: pairs.urls)
+					{
+						std::cout << url << '\n';
+					}
+
+					self->server.broadcast(msg);
+					// TODO: Set server handlers
+				}
 			}
 			else
 				std::cerr << ec.message() << '\n';
@@ -63,32 +73,13 @@ void tcp_connection::read()
 	);
 }
 
-void tcp_connection::write()
-{
-	std::string msg = "Hello world\n";
-
-	auto self = shared_from_this();
-
-	asio::async_write(
-		socket,
-		asio::buffer(msg),
-		[self](boost::system::error_code ec, std::size_t)
-		{
-			if(!ec)
-				self->read();
-			else
-				std::cerr << ec.message() << '\n';
-		}
-	);
-}
-
-void tcp_connection::broadcast_write(const std::string& msg)
+void tcp_connection::broadcast_write(const message::handle& msg)
 {
 	auto self = shared_from_this();
 
 	asio::async_write(
 		socket,
-		asio::buffer(msg),
+		asio::buffer(msg.base::dump()),
 		[self](boost::system::error_code ec, std::size_t)
 		{
 			if(ec)
@@ -115,7 +106,7 @@ void tcp_connection::start()
 	read();
 }
 
-void tcp_connection::start_broadcast(const std::string& msg)
+void tcp_connection::start_broadcast(const message::handle& msg)
 {
 	start_connection();
 	broadcast_write(msg);

@@ -35,7 +35,7 @@ struct base
 		using namespace rapidjson;
 
 		StringBuffer s;
-		Writer<StringBuffer> writer;
+		Writer<StringBuffer> writer(s);
 
 		dump(writer);
 

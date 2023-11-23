@@ -23,6 +23,12 @@
 namespace mini_crypto::message
 {
 
+handle::handle(const std::string& name, std::unique_ptr<base>&& data):
+	name(name),
+	data(std::move(data))
+{
+}
+
 handle::handle(const char* data, size_t size)
 {
 	using namespace rapidjson;

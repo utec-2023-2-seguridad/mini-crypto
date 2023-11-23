@@ -41,7 +41,13 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	);
 
 	start_listening();
-	broadcast("Hello world from localhost:" + std::to_string(port));
+
+	message::pairs p;
+
+	p.jumps_left = 10;
+	p.urls.emplace_back("Hello world from localhost:" + std::to_string(port));
+
+	broadcast(message::handle::make<message::pairs>(std::move(p)));
 }
 
 void tcp_server::start_listening()
@@ -67,14 +73,14 @@ void tcp_server::stop(boost::system::error_code, int)
 	io.stop();
 }
 
-void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, const std::string& msg)
+void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, const message::handle& msg)
 {
 	auto connection = tcp_connection::make(io, *this);
 
 	asio::async_connect(
 		connection->get_socket(),
 		endpoints,
-		[connection, name, msg](boost::system::error_code ec, const tcp::endpoint&)
+		[connection, name, &msg](boost::system::error_code ec, const tcp::endpoint&)
 		{
 			if(!ec)
 				connection->start_broadcast(msg);
@@ -84,7 +90,7 @@ void tcp_server::connect(const std::string& name, const tcp::resolver::results_t
 	);
 }
 
-void tcp_server::broadcast(const std::string& msg)
+void tcp_server::broadcast(const message::handle& msg)
 {
 	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
 

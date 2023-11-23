@@ -16,10 +16,12 @@
 
 #pragma once
 
-#include <array>
-#include <memory>
+#include "message.hpp"
 
 #include <boost/asio.hpp>
+
+#include <array>
+#include <memory>
 
 namespace mini_crypto
 {
@@ -45,9 +47,8 @@ private:
 	tcp_connection(asio::io_context& io, tcp_server& root);
 
 	void read();
-	void write();
 
-	void broadcast_write(const std::string& msg);
+	void broadcast_write(const message::handle& msg);
 
 	void start_connection();
 
@@ -57,7 +58,7 @@ public:
 	tcp::socket& get_socket();
 
 	void start();
-	void start_broadcast(const std::string& msg);
+	void start_broadcast(const message::handle& msg);
 
 	template <typename... Args>
 	static std::shared_ptr<tcp_connection> make(Args&&... args)
