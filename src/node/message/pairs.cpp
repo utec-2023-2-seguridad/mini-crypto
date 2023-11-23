@@ -33,6 +33,9 @@ void pairs::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 
 	writer.EndArray();
 
+	writer.Key("jumps_left");
+	writer.Int(jumps_left);
+
 	writer.EndObject();
 }
 
@@ -50,6 +53,11 @@ bool pairs::load(const rapidjson::Value& value)
 				this->urls.emplace_back(url.GetString());
 			}
 		}
+	}
+
+	if(auto jumps_left = value.FindMember("jumps_left"); jumps_left != value.MemberEnd() && jumps_left->value.IsInt())
+	{
+		this->jumps_left = jumps_left->value.GetInt();
 	}
 
 	return true;

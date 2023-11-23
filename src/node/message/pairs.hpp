@@ -29,6 +29,7 @@ struct pairs: public base
 	static constexpr const char* name = "pairs";
 
 	std::vector<std::string> urls;
+	int                      jumps_left;
 
 	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
 	virtual bool load(const rapidjson::Value& value);
