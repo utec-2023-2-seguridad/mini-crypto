@@ -16,40 +16,33 @@
 
 #pragma once
 
-#include "message.hpp"
-
-#include <boost/asio.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 #include <string>
 
-namespace mini_crypto
+namespace mini_crypto::message
 {
 
-class node;
-
-namespace asio = boost::asio;
-
-class tcp_server
+struct base
 {
-private:
-	using tcp = asio::ip::tcp;
+	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const = 0;
 
-	asio::io_context& io;
-	node&             root;
+	virtual bool load(const rapidjson::Value& value) = 0;
 
-	tcp::acceptor    acceptor;
-	asio::signal_set signals;
+	std::string dump() const
+	{
+		using namespace rapidjson;
 
-	void start_listening();
-	void stop(boost::system::error_code ec, int signal);
+		StringBuffer s;
+		Writer<StringBuffer> writer(s);
 
-public:
-	tcp_server(asio::io_context& io, int port, node& root);
+		dump(writer);
 
-	void connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id);
-	void broadcast(entt::entity message_id);
+		return s.GetString();
+	}
 
-	friend class tcp_connection;
+	virtual ~base() {};
 };
 
 }

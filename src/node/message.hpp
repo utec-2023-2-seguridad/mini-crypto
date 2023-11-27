@@ -16,40 +16,6 @@
 
 #pragma once
 
-#include "message.hpp"
-
-#include <boost/asio.hpp>
-
-#include <string>
-
-namespace mini_crypto
-{
-
-class node;
-
-namespace asio = boost::asio;
-
-class tcp_server
-{
-private:
-	using tcp = asio::ip::tcp;
-
-	asio::io_context& io;
-	node&             root;
-
-	tcp::acceptor    acceptor;
-	asio::signal_set signals;
-
-	void start_listening();
-	void stop(boost::system::error_code ec, int signal);
-
-public:
-	tcp_server(asio::io_context& io, int port, node& root);
-
-	void connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id);
-	void broadcast(entt::entity message_id);
-
-	friend class tcp_connection;
-};
-
-}
+#include "message/base.hpp"
+#include "message/handle.hpp"
+#include "message/pairs.hpp"

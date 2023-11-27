@@ -50,6 +50,7 @@ add_subdirectory(pkg) # Packaging
 # Shared libraries
 pkg_check_modules(libraries
 	REQUIRED IMPORTED_TARGET
+		RapidJSON
 		libsodium
 )
 
@@ -64,7 +65,6 @@ FetchContent_MakeAvailable(EnTT)
 
 find_package(Boost REQUIRED)
 find_package(EnTT REQUIRED)
-find_package(msgpackc-cxx QUIET) # https://github.com/msgpack/msgpack-c/pull/1054
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
@@ -72,8 +72,6 @@ target_link_libraries(${PROJECT_NAME}
 		Boost::headers
 		EnTT::EnTT
 		PkgConfig::libraries
-	INTERFACE
-		msgpackc-cxx
 )
 
 # Default flags
@@ -86,6 +84,7 @@ target_compile_definitions(${PROJECT_NAME}
 	PRIVATE
 		$<$<NOT:$<CONFIG:DEBUG>>:NDEBUG>
 		BOOST_ASIO_SEPARATE_COMPILATION
+		RAPIDJSON_HAS_STDSTRING=1
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")

@@ -16,40 +16,38 @@
 
 #pragma once
 
-#include "message.hpp"
+#include <memory>
+#include <string>
 
 #include <boost/asio.hpp>
 
-#include <string>
+#include "base.hpp"
 
-namespace mini_crypto
+namespace mini_crypto::message
 {
 
-class node;
-
-namespace asio = boost::asio;
-
-class tcp_server
+struct handle: public base
 {
+	std::string           name;
+	std::unique_ptr<base> data;
+
+	handle(const std::string& name, std::unique_ptr<base>&& data);
+	handle(const char* data, size_t size);
+	handle(const boost::asio::streambuf& sb);
+
+	template<typename Type, typename... Args>
+	static handle make(Args &&... args)
+	{
+		return {Type::name, std::make_unique<Type>(std::forward<Args>(args)...)};
+	}
+
+	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+	virtual bool load(const rapidjson::Value& value);
+
+	virtual ~handle() {};
+
 private:
-	using tcp = asio::ip::tcp;
-
-	asio::io_context& io;
-	node&             root;
-
-	tcp::acceptor    acceptor;
-	asio::signal_set signals;
-
-	void start_listening();
-	void stop(boost::system::error_code ec, int signal);
-
-public:
-	tcp_server(asio::io_context& io, int port, node& root);
-
-	void connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id);
-	void broadcast(entt::entity message_id);
-
-	friend class tcp_connection;
+	static std::unique_ptr<base> name2ptr(const std::string& name);
 };
 
 }

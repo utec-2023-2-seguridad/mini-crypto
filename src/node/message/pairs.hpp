@@ -16,40 +16,25 @@
 
 #pragma once
 
-#include "message.hpp"
-
-#include <boost/asio.hpp>
-
 #include <string>
+#include <vector>
 
-namespace mini_crypto
+#include "base.hpp"
+
+namespace mini_crypto::message
 {
 
-class node;
-
-namespace asio = boost::asio;
-
-class tcp_server
+struct pairs: public base
 {
-private:
-	using tcp = asio::ip::tcp;
+	static constexpr const char* name = "pairs";
 
-	asio::io_context& io;
-	node&             root;
+	std::vector<std::string> urls;
+	int                      jumps_left;
 
-	tcp::acceptor    acceptor;
-	asio::signal_set signals;
+	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+	virtual bool load(const rapidjson::Value& value);
 
-	void start_listening();
-	void stop(boost::system::error_code ec, int signal);
-
-public:
-	tcp_server(asio::io_context& io, int port, node& root);
-
-	void connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id);
-	void broadcast(entt::entity message_id);
-
-	friend class tcp_connection;
+	virtual ~pairs() {};
 };
 
 }

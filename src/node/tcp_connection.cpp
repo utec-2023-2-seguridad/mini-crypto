@@ -17,8 +17,7 @@
 #include "node.hpp"
 #include "tcp_connection.hpp"
 #include "tcp_server.hpp"
-
-#include <msgpack.hpp>
+#include "message.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -52,11 +51,24 @@ void tcp_connection::read()
 		{
 			if(!ec || ec == asio::error::eof)
 			{
-				std::string msg(asio::buffer_cast<const char*>(self->buffer.data()), self->buffer.size());
+				auto message_id = self->server.root.get_registry().create();
+				message::handle& msg = self->server.root.get_registry().emplace<message::handle>(message_id, self->buffer);
 
-				std::cout << msg << '\n';
+				if(msg.name == message::pairs::name)
+				{
+					auto& pairs = dynamic_cast<message::pairs&>(*msg.data.get());
 
-				self->server.broadcast(msg);
+					if(pairs.jumps_left-- <= 0)
+						return;
+
+					for(const auto& url: pairs.urls)
+					{
+						std::cerr << url << '\n';
+					}
+
+					self->server.broadcast(message_id);
+					// TODO: Set server handlers
+				}
 			}
 			else
 				std::cerr << ec.message() << '\n';
@@ -64,28 +76,14 @@ void tcp_connection::read()
 	);
 }
 
-void tcp_connection::write()
-{
-	std::string msg = "Hello world\n";
-
-	auto self = shared_from_this();
-
-	asio::async_write(
-		socket,
-		asio::buffer(msg),
-		[self](boost::system::error_code ec, std::size_t)
-		{
-			if(!ec)
-				self->read();
-			else
-				std::cerr << ec.message() << '\n';
-		}
-	);
-}
-
-void tcp_connection::broadcast_write(const std::string& msg)
+void tcp_connection::broadcast_write(entt::entity message_id)
 {
 	auto self = shared_from_this();
+	auto& handle = server.root.get_registry().get<message::handle>(message_id);
+
+	std::string msg = handle.base::dump();
+
+	std::cout << msg << '\n';
 
 	asio::async_write(
 		socket,
@@ -116,10 +114,10 @@ void tcp_connection::start()
 	read();
 }
 
-void tcp_connection::start_broadcast(const std::string& msg)
+void tcp_connection::start_broadcast(entt::entity message_id)
 {
 	start_connection();
-	broadcast_write(msg);
+	broadcast_write(message_id);
 }
 
 }

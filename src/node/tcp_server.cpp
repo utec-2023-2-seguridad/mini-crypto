@@ -41,7 +41,16 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	);
 
 	start_listening();
-	broadcast("Hello world from localhost:" + std::to_string(port));
+
+	message::pairs p;
+
+	p.jumps_left = 10;
+	p.urls.emplace_back("Hello world from localhost:" + std::to_string(port));
+
+	auto new_handle_id = root.get_registry().create();
+	root.get_registry().emplace<message::handle>(new_handle_id, "pairs", std::make_unique<message::pairs>(p));
+
+	broadcast(new_handle_id);
 }
 
 void tcp_server::start_listening()
@@ -67,30 +76,30 @@ void tcp_server::stop(boost::system::error_code, int)
 	io.stop();
 }
 
-void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, const std::string& msg)
+void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)
 {
 	auto connection = tcp_connection::make(io, *this);
 
 	asio::async_connect(
 		connection->get_socket(),
 		endpoints,
-		[connection, name, msg](boost::system::error_code ec, const tcp::endpoint&)
+		[connection, name, message_id](boost::system::error_code ec, const tcp::endpoint&)
 		{
 			if(!ec)
-				connection->start_broadcast(msg);
+				connection->start_broadcast(message_id);
 			else
 				std::cerr << ec.message() << ": " << name << '\n';
 		}
 	);
 }
 
-void tcp_server::broadcast(const std::string& msg)
+void tcp_server::broadcast(entt::entity message_id)
 {
 	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
 
 	for(auto [_, name, endpoints]: view.each())
 	{
-		connect(name, endpoints, msg);
+		connect(name, endpoints, message_id);
 	}
 }
 
