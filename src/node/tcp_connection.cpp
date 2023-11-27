@@ -77,10 +77,15 @@ void tcp_connection::read()
 void tcp_connection::broadcast_write(entt::entity message_id)
 {
 	auto self = shared_from_this();
+	auto& handle = server.root.get_registry().get<message::handle>(message_id);
+
+	std::string msg = handle.base::dump();
+
+	std::cout << msg << '\n';
 
 	asio::async_write(
 		socket,
-		asio::buffer(server.root.get_registry().get<message::handle>(message_id).base::dump()),
+		asio::buffer(msg),
 		[self](boost::system::error_code ec, std::size_t)
 		{
 			if(ec)

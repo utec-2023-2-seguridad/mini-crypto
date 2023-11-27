@@ -69,7 +69,7 @@ bool handle::load(const rapidjson::Value& value)
 
 	if(auto name = value.FindMember("data"); name != value.MemberEnd() && name->value.IsObject())
 	{
-		if(!(data = name2ptr(name->value.GetString())))
+		if(!(data = name2ptr(this->name)))
 			return false;
 
 		data->load(name->value);
