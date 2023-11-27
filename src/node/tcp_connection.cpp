@@ -58,10 +58,12 @@ void tcp_connection::read()
 				{
 					auto& pairs = dynamic_cast<message::pairs&>(*msg.data.get());
 
-					pairs.jumps_left--;
+					if(pairs.jumps_left-- <= 0)
+						return;
+
 					for(const auto& url: pairs.urls)
 					{
-						std::cout << url << '\n';
+						std::cerr << url << '\n';
 					}
 
 					self->server.broadcast(message_id);
