@@ -48,7 +48,7 @@ private:
 
 	void read();
 
-	void broadcast_write(const message::handle& msg);
+	void broadcast_write(entt::entity message_id);
 
 	void start_connection();
 
@@ -58,7 +58,7 @@ public:
 	tcp::socket& get_socket();
 
 	void start();
-	void start_broadcast(const message::handle& msg);
+	void start_broadcast(entt::entity message_id);
 
 	template <typename... Args>
 	static std::shared_ptr<tcp_connection> make(Args&&... args)

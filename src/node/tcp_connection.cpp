@@ -51,7 +51,8 @@ void tcp_connection::read()
 		{
 			if(!ec || ec == asio::error::eof)
 			{
-				message::handle msg(self->buffer);
+				auto message_id = self->server.root.get_registry().create();
+				message::handle& msg = self->server.root.get_registry().emplace<message::handle>(message_id, self->buffer);
 
 				if(msg.name == message::pairs::name)
 				{
@@ -63,7 +64,7 @@ void tcp_connection::read()
 						std::cout << url << '\n';
 					}
 
-					self->server.broadcast(msg);
+					self->server.broadcast(message_id);
 					// TODO: Set server handlers
 				}
 			}
@@ -73,13 +74,13 @@ void tcp_connection::read()
 	);
 }
 
-void tcp_connection::broadcast_write(const message::handle& msg)
+void tcp_connection::broadcast_write(entt::entity message_id)
 {
 	auto self = shared_from_this();
 
 	asio::async_write(
 		socket,
-		asio::buffer(msg.base::dump()),
+		asio::buffer(server.root.get_registry().get<message::handle>(message_id).base::dump()),
 		[self](boost::system::error_code ec, std::size_t)
 		{
 			if(ec)
@@ -106,10 +107,10 @@ void tcp_connection::start()
 	read();
 }
 
-void tcp_connection::start_broadcast(const message::handle& msg)
+void tcp_connection::start_broadcast(entt::entity message_id)
 {
 	start_connection();
-	broadcast_write(msg);
+	broadcast_write(message_id);
 }
 
 }
