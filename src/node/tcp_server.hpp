@@ -46,6 +46,14 @@ private:
 
 	static const handler_map_t handler_map;
 
+	entt::registry& get_registry();
+
+	template <typename T>
+	message::handle& make_message(entt::entity id, T&& message)
+	{
+		return get_registry().emplace<message::handle>(id, T::name, std::make_unique<T>(message));
+	}
+
 	void start_listening();
 	void stop(boost::system::error_code ec, int signal);
 	void handle(entt::entity message_id, const tcp_connection& connection);

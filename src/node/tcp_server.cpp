@@ -29,6 +29,11 @@ const tcp_server::handler_map_t tcp_server::handler_map =
 	{message::pairs::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_pairs)},
 };
 
+entt::registry& tcp_server::get_registry()
+{
+	return root.get_registry();
+}
+
 tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	io(io),
 	root(root),
@@ -54,7 +59,7 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	p.urls.emplace_back("Hello world from localhost:" + std::to_string(port));
 
 	auto new_handle_id = root.get_registry().create();
-	root.get_registry().emplace<message::handle>(new_handle_id, "pairs", std::make_unique<message::pairs>(p));
+	make_message(new_handle_id, std::move(p));
 
 	broadcast(new_handle_id);
 }
@@ -109,7 +114,7 @@ void tcp_server::handle_pairs(const tcp_connection& connection, const message::p
 
 	new_pairs.jumps_left--;
 
-	root.get_registry().emplace<message::handle>(new_message_id, "pairs", std::make_unique<message::pairs>(new_pairs));
+	make_message(new_message_id, std::move(new_pairs));
 
 	broadcast(new_message_id);
 	// TODO: Set server handlers
