@@ -54,13 +54,8 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	start_listening();
 
 	// TODO: Unhardcode this
-	message::pairs p;
-
-	p.jumps_left = 10;
-	p.urls.emplace_back("Hello world from localhost:" + std::to_string(port));
-
 	auto new_handle_id = root.get_registry().create();
-	make_message(new_handle_id, std::move(p));
+	make_message(new_handle_id, root.get_pairs());
 
 	broadcast(new_handle_id);
 }

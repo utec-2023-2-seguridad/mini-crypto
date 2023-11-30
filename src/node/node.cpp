@@ -96,6 +96,20 @@ std::optional<node::url> node::parse_url(const std::string& url_string)
 		return {};
 }
 
+message::pairs node::get_pairs() const
+{
+	message::pairs pairs;
+
+	pairs.jumps_left = 10;
+
+	for(auto &&[_, pair_url]: registry.view<name_t>().each())
+	{
+		pairs.urls.emplace_back(pair_url);
+	}
+
+	return pairs;
+}
+
 entt::registry& node::get_registry()
 {
 	return registry;

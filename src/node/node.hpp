@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include "message.hpp"
 #include "node_create_info.hpp"
 
 #include <boost/asio.hpp>
@@ -60,6 +61,8 @@ public:
 	node(const node_create_info& create_info);
 
 	int run();
+
+	message::pairs get_pairs() const;
 
 	entt::registry& get_registry();
 };
