@@ -26,6 +26,7 @@ namespace mini_crypto
 {
 
 class node;
+class tcp_connection;
 
 namespace asio = boost::asio;
 
@@ -42,6 +43,7 @@ private:
 
 	void start_listening();
 	void stop(boost::system::error_code ec, int signal);
+	void handle(entt::entity message_id, const tcp_connection& connection);
 
 public:
 	tcp_server(asio::io_context& io, int port, node& root);

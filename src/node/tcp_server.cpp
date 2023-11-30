@@ -76,6 +76,27 @@ void tcp_server::stop(boost::system::error_code, int)
 	io.stop();
 }
 
+void tcp_server::handle(entt::entity message_id, const tcp_connection& connection)
+{
+	auto& message = root.get_registry().get<message::handle>(message_id);
+
+	if(message.name == message::pairs::name)
+	{
+		auto& pairs = dynamic_cast<message::pairs&>(*message.data.get());
+
+		if(pairs.jumps_left-- <= 0)
+			return;
+
+		for(const auto& url: pairs.urls)
+		{
+			std::cerr << url << '\n';
+		}
+
+		broadcast(message_id);
+		// TODO: Set server handlers
+	}
+}
+
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)
 {
 	auto connection = tcp_connection::make(io, *this);
