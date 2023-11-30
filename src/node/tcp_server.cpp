@@ -24,6 +24,11 @@
 namespace mini_crypto
 {
 
+const tcp_server::handler_map_t tcp_server::handler_map =
+{
+	{message::pairs::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_pairs)},
+};
+
 tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	io(io),
 	root(root),
@@ -42,6 +47,7 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 
 	start_listening();
 
+	// TODO: Unhardcode this
 	message::pairs p;
 
 	p.jumps_left = 10;
@@ -80,21 +86,33 @@ void tcp_server::handle(entt::entity message_id, const tcp_connection& connectio
 {
 	auto& message = root.get_registry().get<message::handle>(message_id);
 
-	if(message.name == message::pairs::name)
+	auto handle_it = handler_map.find(message.name);
+
+	if(handle_it != handler_map.end())
 	{
-		auto& pairs = dynamic_cast<message::pairs&>(*message.data.get());
-
-		if(pairs.jumps_left-- <= 0)
-			return;
-
-		for(const auto& url: pairs.urls)
-		{
-			std::cerr << url << '\n';
-		}
-
-		broadcast(message_id);
-		// TODO: Set server handlers
+		(this->*handle_it->second)(connection, *message.data);
 	}
+}
+
+void tcp_server::handle_pairs(const tcp_connection& connection, const message::pairs& pairs)
+{
+	if(pairs.jumps_left <= 0)
+		return;
+
+	for(const auto& url: pairs.urls)
+	{
+		std::cerr << url << '\n';
+	}
+
+	auto new_message_id = root.get_registry().create();
+	auto new_pairs      = pairs;
+
+	new_pairs.jumps_left--;
+
+	root.get_registry().emplace<message::handle>(new_message_id, "pairs", std::make_unique<message::pairs>(new_pairs));
+
+	broadcast(new_message_id);
+	// TODO: Set server handlers
 }
 
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)

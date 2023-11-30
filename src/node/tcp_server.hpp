@@ -21,6 +21,7 @@
 #include <boost/asio.hpp>
 
 #include <string>
+#include <unordered_map>
 
 namespace mini_crypto
 {
@@ -33,7 +34,9 @@ namespace asio = boost::asio;
 class tcp_server
 {
 private:
-	using tcp = asio::ip::tcp;
+	using tcp           = asio::ip::tcp;
+	using handle_func_t = void(tcp_server::*)(const tcp_connection&, const message::base&);
+	using handler_map_t = std::unordered_map<std::string, handle_func_t>;
 
 	asio::io_context& io;
 	node&             root;
@@ -41,9 +44,13 @@ private:
 	tcp::acceptor    acceptor;
 	asio::signal_set signals;
 
+	static const handler_map_t handler_map;
+
 	void start_listening();
 	void stop(boost::system::error_code ec, int signal);
 	void handle(entt::entity message_id, const tcp_connection& connection);
+
+	void handle_pairs(const tcp_connection& connection, const message::pairs& pairs);
 
 public:
 	tcp_server(asio::io_context& io, int port, node& root);
