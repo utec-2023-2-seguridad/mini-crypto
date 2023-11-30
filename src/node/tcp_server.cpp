@@ -27,6 +27,7 @@ namespace mini_crypto
 const tcp_server::handler_map_t tcp_server::handler_map =
 {
 	{message::pairs::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_pairs)},
+	// TODO: Add more handlers
 };
 
 entt::registry& tcp_server::get_registry()
