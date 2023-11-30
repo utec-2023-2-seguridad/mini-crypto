@@ -135,7 +135,7 @@ void tcp_server::connect(const std::string& name, const tcp::resolver::results_t
 
 void tcp_server::broadcast(entt::entity message_id)
 {
-	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
+	auto view = root.get_registry().view<node::url_t, node::endpoints_t>();
 
 	for(auto [_, name, endpoints]: view.each())
 	{

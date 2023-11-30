@@ -30,7 +30,7 @@ node::node(const node_create_info& create_info):
 	port(create_info.port)
 {
 	entt::sigh_helper{registry}
-		.with<name_t>()
+		.with<url_t>()
 			.on_construct<&node::parse_pair_url>(*this)
 	;
 
@@ -38,7 +38,7 @@ node::node(const node_create_info& create_info):
 	{
 		entt::entity pair_e = registry.create();
 
-		registry.emplace<name_t>(pair_e, pair);
+		registry.emplace<url_t>(pair_e, pair);
 	}
 }
 
@@ -53,7 +53,7 @@ int node::run()
 
 void node::parse_pair_url(entt::registry& registry, entt::entity entity)
 {
-	auto url = parse_url(registry.get<name_t>(entity));
+	auto url = parse_url(registry.get<url_t>(entity));
 
 	if(!url)
 		return;
@@ -102,7 +102,7 @@ message::pairs node::get_pairs() const
 
 	pairs.jumps_left = 10;
 
-	for(auto &&[_, pair_url]: registry.view<name_t>().each())
+	for(auto &&[_, pair_url]: registry.view<url_t>().each())
 	{
 		pairs.urls.emplace_back(pair_url);
 	}

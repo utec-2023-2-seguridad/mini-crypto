@@ -55,7 +55,7 @@ private:
 	static std::optional<url> parse_url(const std::string& url_string);
 
 public:
-	using name_t      = std::string;
+	using url_t      = std::string;
 	using endpoints_t = tcp::resolver::results_type;
 
 	node(const node_create_info& create_info);
