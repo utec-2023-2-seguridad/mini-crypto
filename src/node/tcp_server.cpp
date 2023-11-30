@@ -27,6 +27,7 @@ namespace mini_crypto
 const tcp_server::handler_map_t tcp_server::handler_map =
 {
 	{message::pairs::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_pairs)},
+	{message::transactions::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_transactions)},
 	// TODO: Add more handlers
 };
 
@@ -113,7 +114,29 @@ void tcp_server::handle_pairs(const tcp_connection& connection, const message::p
 	make_message(new_message_id, std::move(new_pairs));
 
 	broadcast(new_message_id);
-	// TODO: Set server handlers
+	// TODO: Dont broadcast pairs
+}
+
+void tcp_server::handle_transactions(const tcp_connection& connection, const message::transactions& transactions)
+{
+	if(transactions.jumps_left <= 0)
+		return;
+
+	// TODO: Remove old transactions from the registry
+
+	for(const auto& tx: transactions.txs)
+	{
+		std::cerr << tx << '\n';
+	}
+
+	auto new_message_id   = root.get_registry().create();
+	auto new_transactions = transactions;
+
+	new_transactions.jumps_left--;
+
+	make_message(new_message_id, std::move(new_transactions));
+
+	broadcast(new_message_id);
 }
 
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)

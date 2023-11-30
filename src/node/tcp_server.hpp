@@ -59,6 +59,7 @@ private:
 	void handle(entt::entity message_id, const tcp_connection& connection);
 
 	void handle_pairs(const tcp_connection& connection, const message::pairs& pairs);
+	void handle_transactions(const tcp_connection& connection, const message::transactions& transactions);
 
 public:
 	tcp_server(asio::io_context& io, int port, node& root);
