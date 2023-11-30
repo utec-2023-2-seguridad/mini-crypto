@@ -52,23 +52,9 @@ void tcp_connection::read()
 			if(!ec || ec == asio::error::eof)
 			{
 				auto message_id = self->server.root.get_registry().create();
-				message::handle& msg = self->server.root.get_registry().emplace<message::handle>(message_id, self->buffer);
+				self->server.root.get_registry().emplace<message::handle>(message_id, self->buffer);
 
-				if(msg.name == message::pairs::name)
-				{
-					auto& pairs = dynamic_cast<message::pairs&>(*msg.data.get());
-
-					if(pairs.jumps_left-- <= 0)
-						return;
-
-					for(const auto& url: pairs.urls)
-					{
-						std::cerr << url << '\n';
-					}
-
-					self->server.broadcast(message_id);
-					// TODO: Set server handlers
-				}
+				self->server.handle(message_id, *self);
 			}
 			else
 				std::cerr << ec.message() << '\n';
