@@ -1,15 +1,17 @@
-#include "block.hpp"
-#include "../block/transaction.hpp"
+#include "mined.hpp"
 
-#include <vector>
-#include <string>
+#include <boost/asio.hpp>
 
 namespace mini_crypto::miner
 {
 
-collect_transaction::verify_transaction(const transaction& new_transaction){
-    //implementar mecanismos de verificacion de transaccion
+collect_transaction::collect_transaction(const transaction& new_transaction){
+    verify_transaction(new_transaction);
+}
 
+void collect_transaction::verify_transaction(const transaction& new_transaction){
+    
+    //implementar mecanismos de verificacion de transaccion
     if(new_transaction.amount < 1)
     {
         std::cerr << boost::system::error_code.message() << std::endl;
@@ -19,14 +21,13 @@ collect_transaction::verify_transaction(const transaction& new_transaction){
     add_transaction(new_transaction);
 }
 
-collect_transaction::add_transaction(const transaction& new_transaction){
-    std::lock_guard<std::mutex> lock(block_transaction);
-    
-    //aqui deberiamos agregar esta nueva transaccion a la lsita de transacciones
-    //solo que nose como hacer para q todos los mineros tengan la misma lista
+void collect_transaction::add_transaction(const transaction& new_transaction){
 
+    transactions.push_back(new_transaction);
 
-    miner_broadcast.broadcast(new_transaction);
+    if(transactions.size() == max_transactions_per_block){
+        mined mined(transactions);
+    }
 }
 
 }
