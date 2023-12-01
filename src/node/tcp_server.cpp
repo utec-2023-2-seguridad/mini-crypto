@@ -127,7 +127,7 @@ void tcp_server::handle_transactions(const tcp_connection& connection, const mes
     std::cout << "Amount: " << transactions.amount << "\n";
 
     // Enviar una respuesta al remitente
-    message::transaction response;
+    message::transactions response;
     response.sender = "Server";
     response.receiver = transactions.sender;
     response.amount = transactions.amount * 2;  
@@ -135,7 +135,7 @@ void tcp_server::handle_transactions(const tcp_connection& connection, const mes
     // Enviar la respuesta al remitente
     auto response_id = root.get_registry().create();
     make_message(response_id, std::move(response));
-    connection.start_broadcast(response_id);
+    broadcast(response_id);
 }
 
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)
