@@ -22,4 +22,3 @@ target_sources(${PROJECT_NAME}
 
 add_subdirectory(node)
 add_subdirectory(miner)
-add_subdirectory(block)
