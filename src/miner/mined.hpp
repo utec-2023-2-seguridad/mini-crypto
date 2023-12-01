@@ -21,6 +21,7 @@ private:
 
     void last_block(blockchain bc);
     //nose cual deberia usar
+    std::string sha256(const std::string& input);
     void hash_transactions(std::vector<transaction> transactions);
     void hash_transactions_rapid_json();
     void generate_merkle_root(std::vector<transaction> hash_txs);
