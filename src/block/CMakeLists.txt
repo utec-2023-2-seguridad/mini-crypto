@@ -16,6 +16,5 @@
 
 target_sources(${PROJECT_NAME}
 	PRIVATE
-		collect_transaction.cpp
-		mined.cpp
+		block.cpp
 )
