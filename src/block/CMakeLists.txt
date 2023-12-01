@@ -16,10 +16,5 @@
 
 target_sources(${PROJECT_NAME}
 	PRIVATE
-		arguments.cpp
-		main.cpp
+		block.cpp
 )
-
-add_subdirectory(node)
-add_subdirectory(miner)
-add_subdirectory(block)
