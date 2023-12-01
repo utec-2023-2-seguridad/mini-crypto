@@ -38,7 +38,11 @@ struct transaction: public base
     void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
     bool load(const rapidjson::Value& value);
 
-	auto operator<=>(const transaction&) const = default;
+	// Macos can't handle <=>
+	friend bool operator<(const transaction& l, const transaction& r)
+	{
+		return std::tie(l.sender, l.receiver, l.amount) < std::tie(r.sender, r.receiver, r.amount);
+	}
 };
 
 }

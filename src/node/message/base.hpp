@@ -43,8 +43,6 @@ struct base
 	}
 
 	virtual ~base() {};
-
-	auto operator<=>(const base&) const = default;
 };
 
 }
