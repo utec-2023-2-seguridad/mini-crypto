@@ -24,40 +24,42 @@ void transactions::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) cons
 {
     writer.StartObject();
 
-    writer.Key("name");
-    writer.String(name);
+    writer.Key("txs");
+    writer.StartArray();
 
-    writer.Key("sender");
-    writer.String(sender.c_str());
+	for(const auto& tx: txs)
+	{
+		tx.dump(writer);
+	}
 
-    writer.Key("receiver");
-    writer.String(receiver.c_str());
+    writer.EndArray();
 
-    writer.Key("amount");
-    writer.Double(amount);
+	writer.Key("jumps_left");
+	writer.Int(jumps_left);
 
     writer.EndObject();
 }
 
 bool transactions::load(const rapidjson::Value& value)
 {
-    if (!value.IsObject())
-        return false;
+	if(!value.IsObject())
+		return false;
 
-    if (auto sender = value.FindMember("sender"); sender != value.MemberEnd() && sender->value.IsString())
-    {
-        this->sender = sender->value.GetString();
+	if(auto txs = value.FindMember("txs"); txs != value.MemberEnd() && txs->value.IsArray())
+	{
+		for(const auto& tx: txs->value.GetArray())
+		{
+			if(tx.IsObject())
+			{
+				this->txs.emplace_back().load(tx);
+			}
+		}
     }
 
-    if (auto receiver = value.FindMember("receiver"); receiver != value.MemberEnd() && receiver->value.IsString())
-    {
-        this->receiver = receiver->value.GetString();
-    }
-
-    if (auto amount = value.FindMember("amount"); amount != value.MemberEnd() && amount->value.IsNumber())
-    {
-        this->amount = amount->value.GetDouble();
-    }
+	if(auto jumps_left = value.FindMember("jumps_left"); jumps_left != value.MemberEnd() && jumps_left->value.IsInt())
+	{
+		this->jumps_left = jumps_left->value.GetInt();
+	}
 
     return true;
 }

@@ -110,7 +110,30 @@ message::pairs node::get_pairs() const
 	return pairs;
 }
 
+message::transactions node::get_transactions(int jumps_left) const
+{
+    message::transactions transactions;
+
+    transactions.jumps_left = jumps_left;
+
+	std::set<message::transaction> tx_set;
+
+	for(auto &&[_, tx]: get_registry().view<message::transaction>().each())
+	{
+		tx_set.insert(tx);
+	}
+
+	transactions.txs.insert(transactions.txs.end(), tx_set.begin(), tx_set.end());
+
+	return transactions;
+}
+
 entt::registry& node::get_registry()
+{
+	return registry;
+}
+
+const entt::registry& node::get_registry() const
 {
 	return registry;
 }

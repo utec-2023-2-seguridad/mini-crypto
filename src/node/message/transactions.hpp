@@ -16,22 +16,18 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "base.hpp"
+#include "transaction.hpp"
 
 namespace mini_crypto::message
 {
-	
+
 struct transactions: public base
 {
     static constexpr const char* name = "transactions";
 
-    // Atributos específicos del mensaje de transacción
-    std::string sender;
-    std::string receiver;
-    double amount;
+	std::vector<transaction> txs;
+	int                      jumps_left;
 
     // Métodos para serialización y deserialización
     void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;

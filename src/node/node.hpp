@@ -63,8 +63,10 @@ public:
 	int run();
 
 	message::pairs get_pairs() const;
+	message::transactions get_transactions(int jumps_left = 10) const;
 
 	entt::registry& get_registry();
+	const entt::registry& get_registry() const;
 };
 
 }

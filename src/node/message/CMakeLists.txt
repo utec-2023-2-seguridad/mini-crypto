@@ -18,5 +18,6 @@ target_sources(${PROJECT_NAME}
 	PRIVATE
 		handle.cpp
 		pairs.cpp
+		transaction.cpp
 		transactions.cpp
 )

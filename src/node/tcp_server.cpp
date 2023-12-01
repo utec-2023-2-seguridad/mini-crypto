@@ -20,6 +20,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <set>
 
 namespace mini_crypto
 {
@@ -119,22 +120,22 @@ void tcp_server::handle_pairs(const tcp_connection& connection, const message::p
 
 void tcp_server::handle_transactions(const tcp_connection& connection, const message::transactions& transactions)
 {
- 
+	if(transactions.jumps_left <= 0)
+		return;
+
     // Ejemplo: Imprimir la información de la transacción
-    std::cout << "Received Transaction:\n";
-    std::cout << "Sender: " << transactions.sender << "\n";
-    std::cout << "Receiver: " << transactions.receiver << "\n";
-    std::cout << "Amount: " << transactions.amount << "\n";
+    std::cerr << "Received Transactions:\n";
+
+	// Añadir nuevas transacciones al registro
+	for(const auto& tx: transactions.txs)
+	{
+		entt::entity new_id = root.get_registry().create();
+		root.get_registry().emplace<message::transaction>(new_id, tx);
+	}
 
     // Enviar una respuesta al remitente
-    message::transactions response;
-    response.sender = "Server";
-    response.receiver = transactions.sender;
-    response.amount = transactions.amount * 2;  
-
-    // Enviar la respuesta al remitente
     auto response_id = root.get_registry().create();
-    make_message(response_id, std::move(response));
+    make_message(response_id, root.get_transactions(transactions.jumps_left-1));
     broadcast(response_id);
 }
 
