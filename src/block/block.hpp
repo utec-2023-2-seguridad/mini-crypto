@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../node/transaction.hpp"
+#include "../node/message/transaction.hpp"
 
 #include <vector>
 #include <chrono>
