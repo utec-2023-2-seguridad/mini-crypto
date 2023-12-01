@@ -16,7 +16,33 @@
 
 #pragma once
 
-#include "message/base.hpp"
-#include "message/handle.hpp"
-#include "message/pairs.hpp"
-#include "message/transactions.hpp"
+#include <string>
+#include <vector>
+#include <compare>
+
+#include "base.hpp"
+
+namespace mini_crypto::message
+{
+
+struct transaction: public base
+{
+    static constexpr const char* name = "transaction";
+
+    // Atributos específicos del mensaje de transacción
+    std::string sender;
+    std::string receiver;
+    double amount;
+
+    // Métodos para serialización y deserialización
+    void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+    bool load(const rapidjson::Value& value);
+
+	// Macos can't handle <=>
+	friend bool operator<(const transaction& l, const transaction& r)
+	{
+		return std::tie(l.sender, l.receiver, l.amount) < std::tie(r.sender, r.receiver, r.amount);
+	}
+};
+
+}

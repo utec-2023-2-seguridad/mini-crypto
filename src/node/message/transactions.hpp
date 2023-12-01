@@ -16,7 +16,22 @@
 
 #pragma once
 
-#include "message/base.hpp"
-#include "message/handle.hpp"
-#include "message/pairs.hpp"
-#include "message/transactions.hpp"
+#include "base.hpp"
+#include "transaction.hpp"
+
+namespace mini_crypto::message
+{
+
+struct transactions: public base
+{
+    static constexpr const char* name = "transactions";
+
+	std::vector<transaction> txs;
+	int                      jumps_left;
+
+    // Métodos para serialización y deserialización
+    void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+    bool load(const rapidjson::Value& value);
+};
+
+}

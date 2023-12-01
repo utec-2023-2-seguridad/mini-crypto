@@ -20,6 +20,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <set>
 
 namespace mini_crypto
 {
@@ -27,6 +28,7 @@ namespace mini_crypto
 const tcp_server::handler_map_t tcp_server::handler_map =
 {
 	{message::pairs::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_pairs)},
+	{message::transactions::name, reinterpret_cast<tcp_server::handle_func_t>(&tcp_server::handle_transactions)},
 	// TODO: Add more handlers
 };
 
@@ -54,13 +56,8 @@ tcp_server::tcp_server(asio::io_context& io, int port, node& root):
 	start_listening();
 
 	// TODO: Unhardcode this
-	message::pairs p;
-
-	p.jumps_left = 10;
-	p.urls.emplace_back("Hello world from localhost:" + std::to_string(port));
-
 	auto new_handle_id = root.get_registry().create();
-	make_message(new_handle_id, std::move(p));
+	make_message(new_handle_id, root.get_pairs());
 
 	broadcast(new_handle_id);
 }
@@ -118,7 +115,28 @@ void tcp_server::handle_pairs(const tcp_connection& connection, const message::p
 	make_message(new_message_id, std::move(new_pairs));
 
 	broadcast(new_message_id);
-	// TODO: Set server handlers
+	// TODO: Dont broadcast pairs
+}
+
+void tcp_server::handle_transactions(const tcp_connection& connection, const message::transactions& transactions)
+{
+	if(transactions.jumps_left <= 0)
+		return;
+
+    // Ejemplo: Imprimir la información de la transacción
+    std::cerr << "Received Transactions:\n";
+
+	// Añadir nuevas transacciones al registro
+	for(const auto& tx: transactions.txs)
+	{
+		entt::entity new_id = root.get_registry().create();
+		root.get_registry().emplace<message::transaction>(new_id, tx);
+	}
+
+    // Enviar una respuesta al remitente
+    auto response_id = root.get_registry().create();
+    make_message(response_id, root.get_transactions(transactions.jumps_left-1));
+    broadcast(response_id);
 }
 
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)
@@ -140,7 +158,7 @@ void tcp_server::connect(const std::string& name, const tcp::resolver::results_t
 
 void tcp_server::broadcast(entt::entity message_id)
 {
-	auto view = root.get_registry().view<node::name_t, node::endpoints_t>();
+	auto view = root.get_registry().view<node::url_t, node::endpoints_t>();
 
 	for(auto [_, name, endpoints]: view.each())
 	{

@@ -16,8 +16,10 @@
 
 #include "handle.hpp"
 #include "pairs.hpp"
+#include "transactions.hpp"
 
 #include <functional>
+#include <iostream>
 #include <unordered_map>
 
 namespace mini_crypto::message
@@ -70,7 +72,10 @@ bool handle::load(const rapidjson::Value& value)
 	if(auto name = value.FindMember("data"); name != value.MemberEnd() && name->value.IsObject())
 	{
 		if(!(data = name2ptr(this->name)))
+		{
+			this->name = "---";
 			return false;
+		}
 
 		data->load(name->value);
 	}
@@ -82,13 +87,16 @@ std::unique_ptr<base> handle::name2ptr(const std::string& name)
 {
 	static const std::unordered_map<std::string, std::function<std::unique_ptr<base>()>> m =
 	{
-		{pairs::name, [](){return std::make_unique<pairs>();}}
+		{pairs::name, [](){return std::make_unique<pairs>();}},
+		{transactions::name, [](){return std::make_unique<transactions>();}}
 	};
 
 	auto it = m.find(name);
 
 	if(it != m.end())
 		return it->second();
+
+	std::cerr << name << ": Message type not supported\n";
 
 	return nullptr;
 }

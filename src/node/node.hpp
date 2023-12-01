@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include "message.hpp"
 #include "node_create_info.hpp"
 
 #include <boost/asio.hpp>
@@ -54,14 +55,18 @@ private:
 	static std::optional<url> parse_url(const std::string& url_string);
 
 public:
-	using name_t      = std::string;
+	using url_t      = std::string;
 	using endpoints_t = tcp::resolver::results_type;
 
 	node(const node_create_info& create_info);
 
 	int run();
 
+	message::pairs get_pairs() const;
+	message::transactions get_transactions(int jumps_left = 10) const;
+
 	entt::registry& get_registry();
+	const entt::registry& get_registry() const;
 };
 
 }

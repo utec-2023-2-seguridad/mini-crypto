@@ -30,7 +30,7 @@ node::node(const node_create_info& create_info):
 	port(create_info.port)
 {
 	entt::sigh_helper{registry}
-		.with<name_t>()
+		.with<url_t>()
 			.on_construct<&node::parse_pair_url>(*this)
 	;
 
@@ -38,7 +38,7 @@ node::node(const node_create_info& create_info):
 	{
 		entt::entity pair_e = registry.create();
 
-		registry.emplace<name_t>(pair_e, pair);
+		registry.emplace<url_t>(pair_e, pair);
 	}
 }
 
@@ -53,7 +53,7 @@ int node::run()
 
 void node::parse_pair_url(entt::registry& registry, entt::entity entity)
 {
-	auto url = parse_url(registry.get<name_t>(entity));
+	auto url = parse_url(registry.get<url_t>(entity));
 
 	if(!url)
 		return;
@@ -96,7 +96,44 @@ std::optional<node::url> node::parse_url(const std::string& url_string)
 		return {};
 }
 
+message::pairs node::get_pairs() const
+{
+	message::pairs pairs;
+
+	pairs.jumps_left = 10;
+
+	for(auto &&[_, pair_url]: registry.view<url_t>().each())
+	{
+		pairs.urls.emplace_back(pair_url);
+	}
+
+	return pairs;
+}
+
+message::transactions node::get_transactions(int jumps_left) const
+{
+    message::transactions transactions;
+
+    transactions.jumps_left = jumps_left;
+
+	std::set<message::transaction> tx_set;
+
+	for(auto &&[_, tx]: get_registry().view<message::transaction>().each())
+	{
+		tx_set.insert(tx);
+	}
+
+	transactions.txs.insert(transactions.txs.end(), tx_set.begin(), tx_set.end());
+
+	return transactions;
+}
+
 entt::registry& node::get_registry()
+{
+	return registry;
+}
+
+const entt::registry& node::get_registry() const
 {
 	return registry;
 }
