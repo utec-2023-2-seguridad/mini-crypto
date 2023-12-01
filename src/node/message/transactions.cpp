@@ -19,49 +19,47 @@
 namespace mini_crypto::message
 {
 
+
 void transactions::dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
 {
-	writer.StartObject();
+    writer.StartObject();
 
-	writer.Key("txs");
-	writer.StartArray();
+    writer.Key("name");
+    writer.String(name);
 
-	for(const auto& tx: txs)
-	{
-		// TODO: string -> transaction
-		writer.String(tx);
-	}
+    writer.Key("sender");
+    writer.String(sender.c_str());
 
-	writer.EndArray();
+    writer.Key("receiver");
+    writer.String(receiver.c_str());
 
-	writer.Key("jumps_left");
-	writer.Int(jumps_left);
+    writer.Key("amount");
+    writer.Double(amount);
 
-	writer.EndObject();
+    writer.EndObject();
 }
 
 bool transactions::load(const rapidjson::Value& value)
 {
-	if(!value.IsObject())
-		return false;
+    if (!value.IsObject())
+        return false;
 
-	if(auto txs = value.FindMember("txs"); txs != value.MemberEnd() && txs->value.IsArray())
-	{
-		for(const auto& tx: txs->value.GetArray())
-		{
-			if(tx.IsString())
-			{
-				this->txs.emplace_back(tx.GetString());
-			}
-		}
-	}
+    if (auto sender = value.FindMember("sender"); sender != value.MemberEnd() && sender->value.IsString())
+    {
+        this->sender = sender->value.GetString();
+    }
 
-	if(auto jumps_left = value.FindMember("jumps_left"); jumps_left != value.MemberEnd() && jumps_left->value.IsInt())
-	{
-		this->jumps_left = jumps_left->value.GetInt();
-	}
+    if (auto receiver = value.FindMember("receiver"); receiver != value.MemberEnd() && receiver->value.IsString())
+    {
+        this->receiver = receiver->value.GetString();
+    }
 
-	return true;
+    if (auto amount = value.FindMember("amount"); amount != value.MemberEnd() && amount->value.IsNumber())
+    {
+        this->amount = amount->value.GetDouble();
+    }
+
+    return true;
 }
 
 }

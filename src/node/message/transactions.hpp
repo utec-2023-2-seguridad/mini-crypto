@@ -23,19 +23,19 @@
 
 namespace mini_crypto::message
 {
-
+	
 struct transactions: public base
 {
-	static constexpr const char* name = "transactions";
+    static constexpr const char* name = "transactions";
 
-	// TODO: Change string -> transaction
-	std::vector<std::string> txs;
-	int                      jumps_left;
+    // Atributos específicos del mensaje de transacción
+    std::string sender;
+    std::string receiver;
+    double amount;
 
-	virtual void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
-	virtual bool load(const rapidjson::Value& value);
-
-	virtual ~transactions() {};
+    // Métodos para serialización y deserialización
+    void dump(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+    bool load(const rapidjson::Value& value);
 };
 
 }

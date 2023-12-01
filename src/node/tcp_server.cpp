@@ -119,24 +119,23 @@ void tcp_server::handle_pairs(const tcp_connection& connection, const message::p
 
 void tcp_server::handle_transactions(const tcp_connection& connection, const message::transactions& transactions)
 {
-	if(transactions.jumps_left <= 0)
-		return;
+ 
+    // Ejemplo: Imprimir la información de la transacción
+    std::cout << "Received Transaction:\n";
+    std::cout << "Sender: " << transactions.sender << "\n";
+    std::cout << "Receiver: " << transactions.receiver << "\n";
+    std::cout << "Amount: " << transactions.amount << "\n";
 
-	// TODO: Remove old transactions from the registry
+    // Enviar una respuesta al remitente
+    message::transaction response;
+    response.sender = "Server";
+    response.receiver = transactions.sender;
+    response.amount = transactions.amount * 2;  
 
-	for(const auto& tx: transactions.txs)
-	{
-		std::cerr << tx << '\n';
-	}
-
-	auto new_message_id   = root.get_registry().create();
-	auto new_transactions = transactions;
-
-	new_transactions.jumps_left--;
-
-	make_message(new_message_id, std::move(new_transactions));
-
-	broadcast(new_message_id);
+    // Enviar la respuesta al remitente
+    auto response_id = root.get_registry().create();
+    make_message(response_id, std::move(response));
+    connection.start_broadcast(response_id);
 }
 
 void tcp_server::connect(const std::string& name, const tcp::resolver::results_type& endpoints, entt::entity message_id)
